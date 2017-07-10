@@ -17,6 +17,8 @@
 		4BA5158E1F133F00006AA035 /* FaceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA5158D1F133F00006AA035 /* FaceManager.swift */; };
 		4BA515901F134A76006AA035 /* FaceCameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA5158F1F134A76006AA035 /* FaceCameraViewModel.swift */; };
 		4BA515981F134AD8006AA035 /* FaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515971F134AD8006AA035 /* FaceCell.swift */; };
+		4BA5159A1F1357FB006AA035 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515991F1357FB006AA035 /* AppViewController.swift */; };
+		4BA5159C1F136A1A006AA035 /* FaceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA5159B1F136A1A006AA035 /* FaceInfo.swift */; };
 		8A12A651C5064668231D6E0C /* Pods_MyFacePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +35,8 @@
 		4BA5158D1F133F00006AA035 /* FaceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceManager.swift; sourceTree = "<group>"; };
 		4BA5158F1F134A76006AA035 /* FaceCameraViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceCameraViewModel.swift; sourceTree = "<group>"; };
 		4BA515971F134AD8006AA035 /* FaceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceCell.swift; sourceTree = "<group>"; };
+		4BA515991F1357FB006AA035 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
+		4BA5159B1F136A1A006AA035 /* FaceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceInfo.swift; sourceTree = "<group>"; };
 		542C3A1F9E8D22C9250B6524 /* Pods-MyFacePlus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyFacePlus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus.debug.xcconfig"; sourceTree = "<group>"; };
 		B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyFacePlus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5DA0F55E73B831A069C478B /* Pods-MyFacePlus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyFacePlus.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus.release.xcconfig"; sourceTree = "<group>"; };
@@ -103,6 +107,7 @@
 			children = (
 				4BA5158B1F131AED006AA035 /* AppConstants.swift */,
 				4BA5158D1F133F00006AA035 /* FaceManager.swift */,
+				4BA515991F1357FB006AA035 /* AppViewController.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -121,10 +126,27 @@
 			isa = PBXGroup;
 			children = (
 				4BA515771F1307D0006AA035 /* AppDelegate.swift */,
+				4BA5159D1F136A21006AA035 /* Infos */,
 				4BA515921F134A8B006AA035 /* Common */,
-				4BA515911F134A7F006AA035 /* FaceCamera */,
+				4BA5159E1F136A2A006AA035 /* Pages */,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		4BA5159D1F136A21006AA035 /* Infos */ = {
+			isa = PBXGroup;
+			children = (
+				4BA5159B1F136A1A006AA035 /* FaceInfo.swift */,
+			);
+			name = Infos;
+			sourceTree = "<group>";
+		};
+		4BA5159E1F136A2A006AA035 /* Pages */ = {
+			isa = PBXGroup;
+			children = (
+				4BA515911F134A7F006AA035 /* FaceCamera */,
+			);
+			name = Pages;
 			sourceTree = "<group>";
 		};
 		6207E7771FFC7C19F9C7F6B4 /* Frameworks */ = {
@@ -261,9 +283,11 @@
 			files = (
 				4BA5158A1F131196006AA035 /* FaceCameraExtension.swift in Sources */,
 				4BA5157A1F1307D0006AA035 /* FaceCameraController.swift in Sources */,
+				4BA5159A1F1357FB006AA035 /* AppViewController.swift in Sources */,
 				4BA515981F134AD8006AA035 /* FaceCell.swift in Sources */,
 				4BA5158E1F133F00006AA035 /* FaceManager.swift in Sources */,
 				4BA515781F1307D0006AA035 /* AppDelegate.swift in Sources */,
+				4BA5159C1F136A1A006AA035 /* FaceInfo.swift in Sources */,
 				4BA515901F134A76006AA035 /* FaceCameraViewModel.swift in Sources */,
 				4BA5158C1F131AED006AA035 /* AppConstants.swift in Sources */,
 			);

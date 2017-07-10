@@ -10,19 +10,17 @@ import UIKit
 import AVFoundation
 import Photos
 
-class FaceCameraController: UIViewController {
+class FaceCameraController: AppViewController {
     @IBOutlet weak var collectionView : UICollectionView!
     @IBOutlet weak var showFaceBtn: UIButton!
     @IBOutlet weak var cameraBtn: UIButton!
+    @IBOutlet weak var closeView: UIView!
     
     lazy var captureSession = AVCaptureSession()
     lazy var previewLayer = CALayer()
     lazy var filter = CIFilter()
     
-    var ciImage: CIImage?
     var faceObject : AVMetadataFaceObject?
-    var sampleTime: CMTime?
-    var videoDimensions: CMVideoDimensions?
     var deviceInput : AVCaptureDeviceInput?
     var captureDevice : AVCaptureDevice?
 
@@ -39,8 +37,10 @@ class FaceCameraController: UIViewController {
         
         setCollectionView()
         setView()
+        bind()
         setupPreviewLayer()
         setupCaptureSession()
+        viewModel.getFaceInfos()
     }
 
     override func didReceiveMemoryWarning() {
@@ -61,7 +61,48 @@ extension FaceCameraController {
     }
     
     fileprivate func setView() {
-        let recgonizer = UITapGestureRecognizer()
+        let recognizer = UITapGestureRecognizer()
+        recognizer.rx.event.bind { [weak self] sender in
+            self?.viewModel.mode.value = .normal
+        }.addDisposableTo(disposeBag)
+        closeView.addGestureRecognizer(recognizer)
+    }
+    
+    fileprivate func bind() {
+        viewModel.mode.asObservable().bind { [weak self] mode in
+            switch mode {
+            case .normal:
+                self?.toNormalMode()
+            case .faces:
+                self?.toFacesMode()
+            }
+        }.addDisposableTo(disposeBag)
+        
+        viewModel.faceInfos.asObservable().bind { [weak self] _ in
+            self?.collectionView.reloadData()
+        }.addDisposableTo(disposeBag)
+    }
+    
+    private func toNormalMode() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let `self` = self else {return}
+            if !self.collectionView.transform.isIdentity {return}
+            self.collectionView.transform = CGAffineTransform(translationX: 0, y: self.collectionView.bounds.height)
+            self.showFaceBtn.isHidden = false
+            self.cameraBtn.transform = CGAffineTransform.identity
+        }
+    }
+    
+    private func toFacesMode() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.collectionView.transform = CGAffineTransform.identity
+            self?.showFaceBtn.isHidden = true
+
+            var transform = CATransform3DIdentity
+            transform = CATransform3DScale(transform, 0.6, 0.6, 1.0)
+            transform = CATransform3DTranslate(transform, 0, 100, 0)
+           self?.cameraBtn.layer.transform = transform
+        }
     }
     
     fileprivate func setupPreviewLayer() {
@@ -73,7 +114,6 @@ extension FaceCameraController {
     fileprivate func setupCaptureSession() {
         captureSession.beginConfiguration()
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        
         captureDevice = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo).first as? AVCaptureDevice
         
         do {
@@ -96,7 +136,6 @@ extension FaceCameraController {
         metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeFace]
         
         captureSession.commitConfiguration()
-        
         captureSession.startRunning()
     }
 }
@@ -135,9 +174,7 @@ extension FaceCameraController {
     }
     
     @IBAction func showFaces() {
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.collectionView.transform = CGAffineTransform.identity
-        }
+        viewModel.mode.value = .faces
     }
     
     @IBAction func takePicture() {

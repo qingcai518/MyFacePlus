@@ -7,11 +7,42 @@
 //
 
 import UIKit
+import RxSwift
 
 class FaceCell: UICollectionViewCell {
     @IBOutlet weak var imgView : UIImageView!
+    lazy var circleView = UIView()
+    var disposeBag = DisposeBag()
     
-    func configure(with image: UIImage) {
-        imgView.image = image
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
+    
+    func configure(with info: FaceInfo) {
+        imgView.image = info.image
+        info.isSelected.asObservable().bind { [weak self] value in
+            if value {
+                self?.addCircleView()
+            } else {
+                self?.removeCircleView()
+            }
+        }.addDisposableTo(disposeBag)
+    }
+    
+    private func addCircleView() {
+        let padding = CGFloat(6)
+        let size = screenWidth / 6 - 2 * padding
+        circleView.frame = CGRect(x: padding, y: padding, width: size, height: size)
+        circleView.backgroundColor = UIColor.clear
+        circleView.layer.cornerRadius = size / 2
+        circleView.layer.borderWidth = 3
+        circleView.layer.borderColor = UIColor.red.cgColor
+        circleView.clipsToBounds = true
+        contentView.addSubview(circleView)
+    }
+    
+    private func removeCircleView() {
+        circleView.removeFromSuperview()
     }
 }

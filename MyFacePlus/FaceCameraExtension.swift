@@ -11,26 +11,39 @@ import UIKit
 
 extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer),
-            let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else {return}
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
         
-        videoDimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
-        sampleTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)
-        
-        ciImage = CIImage(cvImageBuffer: imageBuffer)
-        
+        var ciImage = CIImage(cvImageBuffer: imageBuffer)
         if let image = self.filter.outputImage {
             filter.setValue(ciImage, forKey: kCIInputImageKey)
             ciImage = image
         }
-
-        // モザイク
-        if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {
-            ciImage = image
+        
+        switch viewModel.faceType {
+        case .mosaic:
+            // モザイク
+            if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {
+                ciImage = image
+            }
+        case .barca:
+            break
+        case .butterfly:
+            break
+        case .cat:
+            break
+        case .glass:
+            break
+        case .picachu:
+            break
+        case .shit:
+            break
+        case .wolf:
+            break
+        case .normal:
+            break
         }
         
-        // TODO. その他画像.
-        
+        // fit screen.
         var transform = CGAffineTransform(rotationAngle: 0)
         switch orientation {
         case .portrait:
@@ -42,11 +55,11 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         default:
             transform = CGAffineTransform(rotationAngle: 0)
         }
-        ciImage = ciImage?.applying(transform)
+        ciImage = ciImage.applying(transform)
+
+        
         DispatchQueue.main.async {
-            if let image = self.ciImage {
-                self.previewLayer.contents = self.context.createCGImage(image, from: image.extent)
-            }
+            self.previewLayer.contents = self.context.createCGImage(ciImage, from: ciImage.extent)
         }
     }
 }
@@ -58,6 +71,14 @@ extension FaceCameraController : AVCaptureMetadataOutputObjectsDelegate {
 }
 
 extension FaceCameraController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.faceType = FaceType(rawValue: indexPath.item)!
+        let _ = (0..<viewModel.faceInfos.value.count).map{ [weak self] index in
+            guard let `self` = self else {return}
+            let info = self.viewModel.faceInfos.value[index]
+            info.isSelected.value = index == indexPath.item
+        }
+    }
 }
 
 extension FaceCameraController: UICollectionViewDelegateFlowLayout {
@@ -73,7 +94,7 @@ extension FaceCameraController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.faceImages.count
+        return viewModel.faceInfos.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -81,7 +102,8 @@ extension FaceCameraController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let info = viewModel.faceInfos.value[indexPath.item]
         guard let faceCell = cell as? FaceCell else {return}
-        faceCell.configure(with: viewModel.faceImages[indexPath.item])
+        faceCell.configure(with: info)
     }
 }

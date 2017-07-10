@@ -6,19 +6,27 @@
 //  Copyright © 2017年 RN-079. All rights reserved.
 //
 
-import Foundation
 import UIKit
+import RxSwift
 
 class FaceCameraViewModel {
-    let faceImages = [
-        UIImage(named: "icon_face0")!,
-        UIImage(named: "icon_face1")!,
-        UIImage(named: "icon_face2")!,
-        UIImage(named: "icon_face3")!,
-        UIImage(named: "icon_face4")!,
-        UIImage(named: "icon_face5")!,
-        UIImage(named: "icon_face6")!,
-        UIImage(named: "icon_face7")!,
-        UIImage(named: "icon_face8")!
-    ]
+    var mode = Variable(CameraMode.normal)
+    var faceType = FaceType.normal
+    var faceInfos = Variable([FaceInfo]())
+    
+    func getFaceInfos() {
+        var result = [FaceInfo]()
+        result.append(FaceInfo(UIImage(named: "icon_face0")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face1")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face2")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face3")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face4")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face5")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face6")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face7")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face8")!, false))
+        
+        let _ = (0..<result.count).filter{faceType.rawValue == $0}.map{result[$0].isSelected.value = true}
+        faceInfos.value = result
+    }
 }

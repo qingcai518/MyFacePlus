@@ -20,6 +20,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSv-cg-VoT">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="507"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bhA-dq-xwL">
                                 <rect key="frame" x="0.0" y="507" width="375" height="160"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -95,17 +99,22 @@
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="bhA-dq-xwL" secondAttribute="bottom" id="8Es-gj-oqc"/>
                             <constraint firstItem="igN-RD-AGp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ATZ-Fi-XPZ"/>
+                            <constraint firstItem="dSv-cg-VoT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="D2j-Mj-esy"/>
+                            <constraint firstAttribute="trailing" secondItem="dSv-cg-VoT" secondAttribute="trailing" id="F3w-XM-VZq"/>
                             <constraint firstItem="UZq-4k-g3V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="16" id="GLc-RL-YUi"/>
+                            <constraint firstItem="dSv-cg-VoT" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="GM1-ze-Ump"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="UZq-4k-g3V" secondAttribute="bottom" constant="48" id="Pqk-64-h8m"/>
                             <constraint firstItem="pSx-Sr-evm" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="YdD-fL-X44"/>
                             <constraint firstItem="bhA-dq-xwL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Zij-OK-qZD"/>
                             <constraint firstAttribute="trailing" secondItem="pSx-Sr-evm" secondAttribute="trailing" constant="16" id="fdp-21-cmj"/>
+                            <constraint firstItem="bhA-dq-xwL" firstAttribute="top" secondItem="dSv-cg-VoT" secondAttribute="bottom" id="vuF-o0-Ztx"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="igN-RD-AGp" secondAttribute="bottom" constant="40" id="yyA-tQ-RrU"/>
                             <constraint firstAttribute="trailing" secondItem="bhA-dq-xwL" secondAttribute="trailing" id="zLr-WT-jW4"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="cameraBtn" destination="igN-RD-AGp" id="ZN4-dz-6WQ"/>
+                        <outlet property="closeView" destination="dSv-cg-VoT" id="9QU-Gj-wBt"/>
                         <outlet property="collectionView" destination="bhA-dq-xwL" id="krO-6t-3BF"/>
                         <outlet property="showFaceBtn" destination="UZq-4k-g3V" id="fqg-uH-6ZB"/>
                     </connections>
