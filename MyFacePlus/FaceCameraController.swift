@@ -11,6 +11,10 @@ import AVFoundation
 import Photos
 
 class FaceCameraController: UIViewController {
+    @IBOutlet weak var collectionView : UICollectionView!
+    @IBOutlet weak var showFaceBtn: UIButton!
+    @IBOutlet weak var cameraBtn: UIButton!
+    
     lazy var captureSession = AVCaptureSession()
     lazy var previewLayer = CALayer()
     lazy var filter = CIFilter()
@@ -27,10 +31,14 @@ class FaceCameraController: UIViewController {
         let options = [kCIContextWorkingColorSpace : NSNull()]
         return CIContext(eaglContext: eaglContext!, options: options)
     }()
+    
+    let viewModel = FaceCameraViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setCollectionView()
+        setView()
         setupPreviewLayer()
         setupCaptureSession()
     }
@@ -45,6 +53,17 @@ class FaceCameraController: UIViewController {
 }
 
 extension FaceCameraController {
+    fileprivate func setCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = UIColor.init(white: 0, alpha: 0.5)
+        collectionView.transform = CGAffineTransform(translationX: 0, y: collectionView.bounds.height)
+    }
+    
+    fileprivate func setView() {
+        let recgonizer = UITapGestureRecognizer()
+    }
+    
     fileprivate func setupPreviewLayer() {
         previewLayer.anchorPoint = CGPoint.zero
         previewLayer.bounds = view.bounds
@@ -113,5 +132,15 @@ extension FaceCameraController {
     private func getDevice(with position: AVCaptureDevicePosition) -> AVCaptureDevice? {
         guard let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) else {return nil}
         return devices.map{$0 as? AVCaptureDevice}.filter{$0?.position == position}.first as? AVCaptureDevice
+    }
+    
+    @IBAction func showFaces() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.collectionView.transform = CGAffineTransform.identity
+        }
+    }
+    
+    @IBAction func takePicture() {
+        
     }
 }

@@ -56,3 +56,32 @@ extension FaceCameraController : AVCaptureMetadataOutputObjectsDelegate {
         faceObject = metadataObjects.count > 0 ? metadataObjects.first as? AVMetadataFaceObject : nil
     }
 }
+
+extension FaceCameraController: UICollectionViewDelegate {
+}
+
+extension FaceCameraController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = screenWidth / 6
+        return CGSize(width: width, height: width)
+    }
+}
+
+extension FaceCameraController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel.faceImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "FaceCell", for: indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let faceCell = cell as? FaceCell else {return}
+        faceCell.configure(with: viewModel.faceImages[indexPath.item])
+    }
+}
