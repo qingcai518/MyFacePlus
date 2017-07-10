@@ -1,0 +1,31 @@
+PODS:
+  - Alamofire (4.5.0)
+  - Kingfisher (3.10.3)
+  - MJRefresh (3.1.12)
+  - RxCocoa (3.5.0):
+    - RxSwift (~> 3.4)
+  - RxSwift (3.5.0)
+  - SVProgressHUD (2.1.2)
+  - SwiftyJSON (3.1.4)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.3)
+  - Kingfisher (~> 3.0)
+  - MJRefresh
+  - RxCocoa (~> 3.0)
+  - RxSwift (~> 3.0)
+  - SVProgressHUD
+  - SwiftyJSON
+
+SPEC CHECKSUMS:
+  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  Kingfisher: a0ac82dc5bcf0388dd74b294cf2cc13730c63436
+  MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
+  RxCocoa: a0a09f45d0e5b48ecb6a4a7b4b4c89c88d3f633f
+  RxSwift: 18ee9d78b45edb3b0b7e79916b47a116e6dbc842
+  SVProgressHUD: c404a55d78acbeb7ebb78b76d3faf986475a6994
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+
+PODFILE CHECKSUM: 0950bb91b7948c5ada08eea8aee9fcddf3bbc592
+
+COCOAPODS: 1.2.1

@@ -17,6 +17,7 @@
 		4BA5158E1F133F00006AA035 /* FaceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA5158D1F133F00006AA035 /* FaceManager.swift */; };
 		4BA515901F134A76006AA035 /* FaceCameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA5158F1F134A76006AA035 /* FaceCameraViewModel.swift */; };
 		4BA515981F134AD8006AA035 /* FaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515971F134AD8006AA035 /* FaceCell.swift */; };
+		8A12A651C5064668231D6E0C /* Pods_MyFacePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,9 @@
 		4BA5158D1F133F00006AA035 /* FaceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceManager.swift; sourceTree = "<group>"; };
 		4BA5158F1F134A76006AA035 /* FaceCameraViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceCameraViewModel.swift; sourceTree = "<group>"; };
 		4BA515971F134AD8006AA035 /* FaceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceCell.swift; sourceTree = "<group>"; };
+		542C3A1F9E8D22C9250B6524 /* Pods-MyFacePlus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyFacePlus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus.debug.xcconfig"; sourceTree = "<group>"; };
+		B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyFacePlus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5DA0F55E73B831A069C478B /* Pods-MyFacePlus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyFacePlus.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,17 +43,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A12A651C5064668231D6E0C /* Pods_MyFacePlus.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		165BD451F85C4A340A516ECC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				542C3A1F9E8D22C9250B6524 /* Pods-MyFacePlus.debug.xcconfig */,
+				F5DA0F55E73B831A069C478B /* Pods-MyFacePlus.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		4BA5156B1F1307D0006AA035 = {
 			isa = PBXGroup;
 			children = (
 				4BA515761F1307D0006AA035 /* MyFacePlus */,
 				4BA515751F1307D0006AA035 /* Products */,
+				165BD451F85C4A340A516ECC /* Pods */,
+				6207E7771FFC7C19F9C7F6B4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,6 +127,14 @@
 			name = Source;
 			sourceTree = "<group>";
 		};
+		6207E7771FFC7C19F9C7F6B4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -118,9 +142,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4BA515861F1307D0006AA035 /* Build configuration list for PBXNativeTarget "MyFacePlus" */;
 			buildPhases = (
+				6B9B479D8481E56387009967 /* [CP] Check Pods Manifest.lock */,
 				4BA515701F1307D0006AA035 /* Sources */,
 				4BA515711F1307D0006AA035 /* Frameworks */,
 				4BA515721F1307D0006AA035 /* Resources */,
+				6E42DC4DBABB7E68677FE515 /* [CP] Embed Pods Frameworks */,
+				6F63B71E89211A9A891A0926 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -178,6 +205,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6B9B479D8481E56387009967 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		6E42DC4DBABB7E68677FE515 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6F63B71E89211A9A891A0926 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4BA515701F1307D0006AA035 /* Sources */ = {
@@ -313,6 +388,7 @@
 		};
 		4BA515871F1307D0006AA035 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 542C3A1F9E8D22C9250B6524 /* Pods-MyFacePlus.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 2RW8Q6Y7W7;
@@ -327,6 +403,7 @@
 		};
 		4BA515881F1307D0006AA035 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F5DA0F55E73B831A069C478B /* Pods-MyFacePlus.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 2RW8Q6Y7W7;
