@@ -13,6 +13,11 @@ class FaceManager {
     static let shared = FaceManager()
     private init() {}
     
+    func showAllFilters() {
+        let filterNames = CIFilter.filterNames(inCategory: kCICategoryBuiltIn)
+        let _ = filterNames.map{print($0)}
+    }
+
     func makeMosaicFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
