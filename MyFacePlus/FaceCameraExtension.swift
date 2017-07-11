@@ -22,11 +22,11 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         switch viewModel.faceType {
         case .mosaic:
             // モザイク
-            if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {
+            if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) { ciImage = image }
+        case .barca:
+            if let image = FaceManager.shared.makeBarcaFace(with: ciImage, faceObject) {
                 ciImage = image
             }
-        case .barca:
-            break
         case .butterfly:
             break
         case .cat:
