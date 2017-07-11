@@ -71,11 +71,12 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         //-90度算法
-        let originX = view.bounds.size.width * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
-        let originY = view.bounds.size.height * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
+//        let originX = screenWidth * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)   // ---x中间位置.
+        let originX = screenWidth * (1 - faceObject.bounds.size.height)  //--靠右位置.
+        let originY = screenHeight * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
         
-        let width = view.bounds.size.width * faceObject.bounds.size.height / 3
-        let height = view.bounds.size.height * faceObject.bounds.size.width / 3
+        let width = screenWidth * faceObject.bounds.size.height / 4
+        let height = screenHeight * faceObject.bounds.size.width / 4
         
         // 顔を検知された場合.
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
@@ -84,6 +85,7 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
             self.view.bringSubview(toFront: collectionView)
             self.view.bringSubview(toFront: showFaceBtn)
             self.view.bringSubview(toFront: cameraBtn)
+            self.view.bringSubview(toFront: switchBtn)
             self.view.bringSubview(toFront: closeView)
         }
         barcaView.setIconPosition(originX, originY, width, height)

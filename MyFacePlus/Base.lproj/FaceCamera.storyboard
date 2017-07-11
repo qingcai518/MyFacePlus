@@ -117,6 +117,7 @@
                         <outlet property="closeView" destination="dSv-cg-VoT" id="9QU-Gj-wBt"/>
                         <outlet property="collectionView" destination="bhA-dq-xwL" id="krO-6t-3BF"/>
                         <outlet property="showFaceBtn" destination="UZq-4k-g3V" id="fqg-uH-6ZB"/>
+                        <outlet property="switchBtn" destination="pSx-Sr-evm" id="NTp-EB-aAn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

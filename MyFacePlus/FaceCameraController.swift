@@ -14,6 +14,7 @@ class FaceCameraController: AppViewController {
     @IBOutlet weak var collectionView : UICollectionView!
     @IBOutlet weak var showFaceBtn: UIButton!
     @IBOutlet weak var cameraBtn: UIButton!
+    @IBOutlet weak var switchBtn: UIButton!
     @IBOutlet weak var closeView: UIView!
     
     // for mengpai.
