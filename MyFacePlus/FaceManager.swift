@@ -29,9 +29,7 @@ class FaceManager {
         let centerX = inputImage.extent.size.width * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
         let centerY = inputImage.extent.size.height * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
         let radius = faceObject.bounds.size.width * inputImage.extent.size.width / 2
-        
-        print("center x = \(centerX), center y = \(centerY), radius = \(radius)")
-        
+
         let params: [String: Any] = [
             "inputRadius0" : radius,
             "inputRadius1" : radius + 1,
@@ -53,29 +51,42 @@ class FaceManager {
     
     /**
      * 图片合成
-     * 处理速度很慢，应该不行
      */
-    func makeBarcaFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?) -> CIImage? {
-        guard let inputImage = inputImage else {return nil}
-//        guard let faceObject = faceObject else {return nil}
-        
-        let originImage = UIImage(ciImage: inputImage)
-//        let barcaImage = UIImage.animatedImage(with: [UIImage(named: "icon_face2")!, UIImage(named: "icon_face2_big")!], duration: 0.3)
-        let barcaImage = UIImage(named: "icon_face2")!
-        
-        let size = originImage.size
-        UIGraphicsBeginImageContext(size)
-        
-        originImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        let barcaWidth = CGFloat(64)
-        
-        barcaImage.draw(in: CGRect(x: (size.width - barcaWidth)/2, y: (size.height - barcaWidth)/2, width: barcaWidth, height: barcaWidth))
+    func mergeImage(_ baseImage: UIImage?, _ maskImage: UIImage?, _ maskFrame: CGRect) -> UIImage? {
+        guard let base = baseImage else {return nil}
+        guard let mask = maskImage else {return baseImage}
+
+        UIGraphicsBeginImageContext(CGSize(width: screenWidth, height: screenHeight))
+        base.draw(in: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
+        mask.draw(in: maskFrame)
         let result = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        let data = UIImagePNGRepresentation(result!)
-        let ciImage = CIImage(data: data!)
-        
-        return ciImage
+        return result
     }
+    
+
+//    func makeBarcaFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?) -> CIImage? {
+//        guard let inputImage = inputImage else {return nil}
+////        guard let faceObject = faceObject else {return nil}
+//        
+//        let originImage = UIImage(ciImage: inputImage)
+////        let barcaImage = UIImage.animatedImage(with: [UIImage(named: "icon_face2")!, UIImage(named: "icon_face2_big")!], duration: 0.3)
+//        let barcaImage = UIImage(named: "icon_face2")!
+//        
+//        let size = originImage.size
+//        UIGraphicsBeginImageContext(size)
+//        
+//        originImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+//        let barcaWidth = CGFloat(64)
+//        
+//        barcaImage.draw(in: CGRect(x: (size.width - barcaWidth)/2, y: (size.height - barcaWidth)/2, width: barcaWidth, height: barcaWidth))
+//        let result = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        
+//        let data = UIImagePNGRepresentation(result!)
+//        let ciImage = CIImage(data: data!)
+//        
+//        return ciImage
+//    }
 }

@@ -81,6 +81,10 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
             barcaView = tempView
             self.view.addSubview(barcaView)
+            self.view.bringSubview(toFront: collectionView)
+            self.view.bringSubview(toFront: showFaceBtn)
+            self.view.bringSubview(toFront: cameraBtn)
+            self.view.bringSubview(toFront: closeView)
         }
         barcaView.setIconPosition(originX, originY, width, height)
         

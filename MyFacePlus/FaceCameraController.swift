@@ -198,7 +198,17 @@ extension FaceCameraController {
     @IBAction func takePicture() {
         guard let image = ciImage else {return}
         guard let cgImage = CIContext(options: nil).createCGImage(image, from: image.extent) else {return}
-        let uiImage = UIImage(cgImage: cgImage)
+        var uiImage: UIImage? = UIImage(cgImage: cgImage)
+        
+        // 合成.
+        switch viewModel.faceType {
+        case .barca:
+            let barcaIcon = barcaView.iconView.image
+            let barcaFrame = barcaView.iconView.frame
+            uiImage = FaceManager.shared.mergeImage(uiImage, barcaIcon, barcaFrame)
+        default:
+            break
+        }
 
         guard let next = UIStoryboard(name: "Confirm", bundle: nil).instantiateInitialViewController() as? UINavigationController else {return}
         guard let confirmController = next.viewControllers.first as? ConfirmController else {return}

@@ -13,7 +13,8 @@ class BarcaView: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        frame = CGRect(x: 0, y: 64, width: screenWidth, height: screenHeight - 64 - 160)
+//        frame = CGRect(x: 0, y: 64, width: screenWidth, height: screenHeight - 64 - 160)
+        frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
         backgroundColor = UIColor.init(white: 0, alpha: 0)
         
         let defaultSize = CGFloat(44)
