@@ -204,7 +204,7 @@ extension FaceCameraController {
         // 合成.
         switch viewModel.faceType {
         case .barca:
-            let barcaIcon = barcaView.iconView.image
+            let barcaIcon = barcaView.iconView.animationImages?.first
             let barcaFrame = barcaView.iconView.frame
             uiImage = FaceManager.shared.mergeImage(uiImage, barcaIcon, barcaFrame)
         default:
