@@ -23,10 +23,26 @@ class ConfirmController: AppViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
 }
 
 extension ConfirmController {
     fileprivate func setView() {
         photoView.image = photo
+    }
+}
+
+extension ConfirmController {
+    @IBAction func doClose() {
+        dismiss(animated: true, completion: nil)
     }
 }

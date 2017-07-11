@@ -54,6 +54,20 @@ class FaceCameraController: AppViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         previewLayer.bounds.size = size
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if !captureSession.isRunning {
+            captureSession.startRunning()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if captureSession.isRunning {
+            captureSession.stopRunning()
+        }
+    }
 }
 
 extension FaceCameraController {
@@ -183,8 +197,6 @@ extension FaceCameraController {
     
     @IBAction func takePicture() {
         guard let image = ciImage else {return}
-        captureSession.stopRunning()
-        
         guard let cgImage = CIContext(options: nil).createCGImage(image, from: image.extent) else {return}
         let uiImage = UIImage(cgImage: cgImage)
 
