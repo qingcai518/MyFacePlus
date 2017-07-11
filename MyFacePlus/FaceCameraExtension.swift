@@ -68,11 +68,21 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         
-        print("face object - \(faceObject)")
+        let originX = faceObject.bounds.origin.x
+        let originY = faceObject.bounds.origin.y
+        let faceWidth = faceObject.bounds.width
+        let faceHeight = faceObject.bounds.height
+        
+        
+//        let centerX = inputImage.extent.size.width * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
+//        let centerY = inputImage.extent.size.height * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
+//        let radius = faceObject.bounds.size.width * inpu
+        tImage.extent.size.width / 2
         
         // 顔を検知された場合.
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
             barcaView = tempView
+            barcaView.setIconPosition(originX, originY, faceWidth, faceHeight)
             self.view.addSubview(barcaView)
         }
     }

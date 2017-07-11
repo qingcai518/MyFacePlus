@@ -23,7 +23,7 @@ class BarcaView: UIView {
 }
 
 extension BarcaView {
-    fileprivate func setIconPosition(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat) {
+    func setIconPosition(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat) {
         iconView.frame = CGRect(x: x, y: y, width: w, height: h)
     }
 }
