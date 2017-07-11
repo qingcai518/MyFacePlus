@@ -49,6 +49,10 @@ class FaceManager {
         return blendFilter.outputImage
     }
     
+    /**
+     * 图片合成
+     * 处理速度很慢，应该不行
+     */
     func makeBarcaFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
 //        guard let faceObject = faceObject else {return nil}
@@ -61,14 +65,14 @@ class FaceManager {
         UIGraphicsBeginImageContext(size)
         
         originImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        barcaImage.draw(in: CGRect(x: 30, y: 30, width: size.width - 60, height: size.height - 60))
+        let barcaWidth = CGFloat(64)
+        
+        barcaImage.draw(in: CGRect(x: (size.width - barcaWidth)/2, y: (size.height - barcaWidth)/2, width: barcaWidth, height: barcaWidth))
         let result = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         let data = UIImagePNGRepresentation(result!)
         let ciImage = CIImage(data: data!)
-        
-        print("ciImage = \(ciImage)")
         
         return ciImage
     }

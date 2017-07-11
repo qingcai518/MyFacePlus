@@ -19,28 +19,9 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
             ciImage = image
         }
         
-        switch viewModel.faceType {
-        case .mosaic:
-            // モザイク
-            if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) { ciImage = image }
-        case .barca:
-            if let image = FaceManager.shared.makeBarcaFace(with: ciImage, faceObject) {
-                ciImage = image
-            }
-        case .butterfly:
-            break
-        case .cat:
-            break
-        case .glass:
-            break
-        case .picachu:
-            break
-        case .shit:
-            break
-        case .wolf:
-            break
-        case .normal:
-            break
+        // モザイクを選択する場合.
+        if viewModel.faceType == .mosaic {
+            if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {ciImage = image}
         }
         
         // fit screen.
@@ -60,8 +41,37 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         DispatchQueue.main.async {
             self.previewLayer.contents = self.context.createCGImage(ciImage, from: ciImage.extent)
+            // 他の効果を選択した場合
+            self.addEffective(self.viewModel.faceType)
         }
     }
+    
+    private func addEffective(_ type: FaceType) {
+        switch type {
+        case .barca:
+            guard let faceObject = faceObject else {
+                removeBarcaView()
+                break
+            }
+            
+            print("face object = \(faceObject)")
+            
+            if barcaView==nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
+                barcaView = tempView
+                self.view.addSubview(barcaView)
+            }
+        default:
+            removeBarcaView()
+        }
+    }
+    
+    private func removeBarcaView() {
+        if barcaView != nil {
+            barcaView.removeFromSuperview()
+            barcaView = nil
+        }
+    }
+    
 }
 
 extension FaceCameraController : AVCaptureMetadataOutputObjectsDelegate {

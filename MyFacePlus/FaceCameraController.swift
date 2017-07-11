@@ -16,6 +16,9 @@ class FaceCameraController: AppViewController {
     @IBOutlet weak var cameraBtn: UIButton!
     @IBOutlet weak var closeView: UIView!
     
+    // for mengpai.
+    var barcaView : BarcaView!
+    
     lazy var captureSession = AVCaptureSession()
     lazy var previewLayer = CALayer()
     lazy var filter = CIFilter()
