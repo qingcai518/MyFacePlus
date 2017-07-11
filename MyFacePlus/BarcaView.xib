@@ -14,7 +14,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="icon_face2" translatesAutoresizingMaskIntoConstraints="NO" id="hLa-k9-Zo8">
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" fixedFrame="YES" image="icon_face2" translatesAutoresizingMaskIntoConstraints="NO" id="hLa-k9-Zo8">
                     <rect key="frame" x="180" y="318" width="24" height="24"/>
                     <autoresizingMask key="autoresizingMask"/>
                 </imageView>

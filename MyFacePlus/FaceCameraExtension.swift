@@ -42,17 +42,17 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         DispatchQueue.main.async {
             self.previewLayer.contents = self.context.createCGImage(ciImage, from: ciImage.extent)
             // 他の効果を選択した場合
-            self.addEffective(self.viewModel.faceType)
+            self.addEffective(self.viewModel.faceType, ciImage)
         }
     }
     
     /**
      * FaceTypeにより、効果を追加する.
      */
-    private func addEffective(_ type: FaceType) {
+    private func addEffective(_ type: FaceType, _ ciImage: CIImage?) {
         switch type {
         case .barca:
-            addBarcaView()
+            addBarcaView(ciImage)
         default:
             removeBarcaView()
         }
@@ -61,30 +61,42 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
     /**
      * 種類2の効果 : BarcaView.
      */
-    private func addBarcaView() {
+    private func addBarcaView(_ ciImage : CIImage?) {
+        guard let inputImage = ciImage else {return}
+        
         // 顔を検知されなかった場合.
         guard let faceObject = faceObject else {
             removeBarcaView()
             return
         }
         
-        let originX = faceObject.bounds.origin.x
-        let originY = faceObject.bounds.origin.y
-        let faceWidth = faceObject.bounds.width
-        let faceHeight = faceObject.bounds.height
+        //-90度算法
+        let originX = view.bounds.size.width * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
+        let originY = view.bounds.size.height * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
         
+        let width = view.bounds.size.width * faceObject.bounds.size.height
+        let height = view.bounds.size.height * faceObject.bounds.size.width
         
-//        let centerX = inputImage.extent.size.width * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
-//        let centerY = inputImage.extent.size.height * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
-//        let radius = faceObject.bounds.size.width * inpu
-        tImage.extent.size.width / 2
+//        let position = CGPoint(x: view.bounds.width * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2), y: view.bounds.height * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2))
+//        
+//        let size = CGSize(width: faceObject.bounds.size.height * view.bounds.width, height: faceObject.bounds.size.width * view.bounds.height)
+        
+        print("originX = \(originX), originY = \(originY), width = \(width), height = \(height)")
+        
+        // 其他算法
+//        let centerX = view.bounds.size.width * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
+//        let centerY = view.bounds.size.height * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
+//        let radius = faceObject.bounds.size.width * view.bounds.size.width / 2
+//        
+//        print("centerX = \(centerX), centerY = \(centerY), radius = \(radius)")
+        
         
         // 顔を検知された場合.
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
             barcaView = tempView
-            barcaView.setIconPosition(originX, originY, faceWidth, faceHeight)
             self.view.addSubview(barcaView)
         }
+        barcaView.setIconPosition(originX, originY, width, height)
     }
     
     private func removeBarcaView() {

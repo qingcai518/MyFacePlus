@@ -30,6 +30,8 @@ class FaceManager {
         let centerY = inputImage.extent.size.height * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
         let radius = faceObject.bounds.size.width * inputImage.extent.size.width / 2
         
+        print("center x = \(centerX), center y = \(centerY), radius = \(radius)")
+        
         let params: [String: Any] = [
             "inputRadius0" : radius,
             "inputRadius1" : radius + 1,
