@@ -13,7 +13,7 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
         
-        var ciImage = CIImage(cvImageBuffer: imageBuffer)
+        ciImage = CIImage(cvImageBuffer: imageBuffer)
         if let image = self.filter.outputImage {
             filter.setValue(ciImage, forKey: kCIInputImageKey)
             ciImage = image
@@ -36,11 +36,13 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         default:
             transform = CGAffineTransform(rotationAngle: 0)
         }
-        ciImage = ciImage.applying(transform)
+        ciImage = ciImage?.applying(transform)
 
         
         DispatchQueue.main.async {
-            self.previewLayer.contents = self.context.createCGImage(ciImage, from: ciImage.extent)
+            if let image = self.ciImage {
+                self.previewLayer.contents = self.context.createCGImage(image, from: image.extent)
+            }
             // 他の効果を選択した場合
             self.addEffective(self.viewModel.faceType)
         }
@@ -72,10 +74,8 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let originX = view.bounds.size.width * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
         let originY = view.bounds.size.height * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
         
-        let width = view.bounds.size.width * faceObject.bounds.size.height
-        let height = view.bounds.size.height * faceObject.bounds.size.width
-        
-        print("originX = \(originX), originY = \(originY), width = \(width), height = \(height)")
+        let width = view.bounds.size.width * faceObject.bounds.size.height / 3
+        let height = view.bounds.size.height * faceObject.bounds.size.width / 3
         
         // 顔を検知された場合.
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {

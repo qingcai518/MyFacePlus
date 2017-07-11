@@ -21,6 +21,8 @@
 		4BA5159C1F136A1A006AA035 /* FaceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA5159B1F136A1A006AA035 /* FaceInfo.swift */; };
 		4BA515A11F146325006AA035 /* BarcaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4BA515A01F146325006AA035 /* BarcaView.xib */; };
 		4BA515A31F1465F4006AA035 /* BarcaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515A21F1465F4006AA035 /* BarcaView.swift */; };
+		4BA515A61F149CE4006AA035 /* Confirm.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BA515A51F149CE4006AA035 /* Confirm.storyboard */; };
+		4BA515A81F149D67006AA035 /* ConfirmController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515A71F149D67006AA035 /* ConfirmController.swift */; };
 		8A12A651C5064668231D6E0C /* Pods_MyFacePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 		4BA5159B1F136A1A006AA035 /* FaceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceInfo.swift; sourceTree = "<group>"; };
 		4BA515A01F146325006AA035 /* BarcaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BarcaView.xib; sourceTree = "<group>"; };
 		4BA515A21F1465F4006AA035 /* BarcaView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcaView.swift; sourceTree = "<group>"; };
+		4BA515A51F149CE4006AA035 /* Confirm.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Confirm.storyboard; sourceTree = "<group>"; };
+		4BA515A71F149D67006AA035 /* ConfirmController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmController.swift; sourceTree = "<group>"; };
 		542C3A1F9E8D22C9250B6524 /* Pods-MyFacePlus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyFacePlus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus.debug.xcconfig"; sourceTree = "<group>"; };
 		B6597ED0C0B0C9DA1C461075 /* Pods_MyFacePlus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyFacePlus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5DA0F55E73B831A069C478B /* Pods-MyFacePlus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyFacePlus.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyFacePlus/Pods-MyFacePlus.release.xcconfig"; sourceTree = "<group>"; };
@@ -149,6 +153,7 @@
 		4BA5159E1F136A2A006AA035 /* Pages */ = {
 			isa = PBXGroup;
 			children = (
+				4BA515A41F149CD9006AA035 /* Confirm */,
 				4BA515911F134A7F006AA035 /* FaceCamera */,
 			);
 			name = Pages;
@@ -161,6 +166,15 @@
 				4BA515A21F1465F4006AA035 /* BarcaView.swift */,
 			);
 			name = parts;
+			sourceTree = "<group>";
+		};
+		4BA515A41F149CD9006AA035 /* Confirm */ = {
+			isa = PBXGroup;
+			children = (
+				4BA515A51F149CE4006AA035 /* Confirm.storyboard */,
+				4BA515A71F149D67006AA035 /* ConfirmController.swift */,
+			);
+			name = Confirm;
 			sourceTree = "<group>";
 		};
 		6207E7771FFC7C19F9C7F6B4 /* Frameworks */ = {
@@ -237,6 +251,7 @@
 				4BA515821F1307D0006AA035 /* LaunchScreen.storyboard in Resources */,
 				4BA5157F1F1307D0006AA035 /* Assets.xcassets in Resources */,
 				4BA515A11F146325006AA035 /* BarcaView.xib in Resources */,
+				4BA515A61F149CE4006AA035 /* Confirm.storyboard in Resources */,
 				4BA5157D1F1307D0006AA035 /* FaceCamera.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -306,6 +321,7 @@
 				4BA5159C1F136A1A006AA035 /* FaceInfo.swift in Sources */,
 				4BA515901F134A76006AA035 /* FaceCameraViewModel.swift in Sources */,
 				4BA5158C1F131AED006AA035 /* AppConstants.swift in Sources */,
+				4BA515A81F149D67006AA035 /* ConfirmController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

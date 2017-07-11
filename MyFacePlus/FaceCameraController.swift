@@ -26,6 +26,7 @@ class FaceCameraController: AppViewController {
     var faceObject : AVMetadataFaceObject?
     var deviceInput : AVCaptureDeviceInput?
     var captureDevice : AVCaptureDevice?
+    var ciImage: CIImage?
 
     lazy var context: CIContext = {
         let eaglContext = EAGLContext(api: EAGLRenderingAPI.openGLES2)
@@ -181,6 +182,15 @@ extension FaceCameraController {
     }
     
     @IBAction func takePicture() {
+        guard let image = ciImage else {return}
+        captureSession.stopRunning()
         
+        guard let cgImage = CIContext(options: nil).createCGImage(image, from: image.extent) else {return}
+        let uiImage = UIImage(cgImage: cgImage)
+
+        guard let next = UIStoryboard(name: "Confirm", bundle: nil).instantiateInitialViewController() as? UINavigationController else {return}
+        guard let confirmController = next.viewControllers.first as? ConfirmController else {return}
+        confirmController.photo = uiImage
+        self.present(next, animated: true, completion: nil)
     }
 }
