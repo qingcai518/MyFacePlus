@@ -18,6 +18,7 @@ class BarcaView: UIView {
         
         let defaultSize = CGFloat(44)
         setIconPosition((screenWidth - defaultSize) / 2, (screenHeight - defaultSize) / 2, defaultSize, defaultSize)
+        iconView.image = UIImage.animatedImage(with: [UIImage(named: "icon_face2")!, UIImage(named: "icon_face2_big")!], duration: 1)
     }
 }
 

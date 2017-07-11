@@ -46,22 +46,34 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
+    /**
+     * FaceTypeにより、効果を追加する.
+     */
     private func addEffective(_ type: FaceType) {
         switch type {
         case .barca:
-            guard let faceObject = faceObject else {
-                removeBarcaView()
-                break
-            }
-            
-            print("face object = \(faceObject)")
-            
-            if barcaView==nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
-                barcaView = tempView
-                self.view.addSubview(barcaView)
-            }
+            addBarcaView()
         default:
             removeBarcaView()
+        }
+    }
+    
+    /**
+     * 種類2の効果 : BarcaView.
+     */
+    private func addBarcaView() {
+        // 顔を検知されなかった場合.
+        guard let faceObject = faceObject else {
+            removeBarcaView()
+            return
+        }
+        
+        print("face object - \(faceObject)")
+        
+        // 顔を検知された場合.
+        if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
+            barcaView = tempView
+            self.view.addSubview(barcaView)
         }
     }
     
