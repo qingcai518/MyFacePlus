@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B26BB2A1F15AD3800826641 /* AppUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26BB291F15AD3800826641 /* AppUtility.swift */; };
 		4BA515781F1307D0006AA035 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515771F1307D0006AA035 /* AppDelegate.swift */; };
 		4BA5157A1F1307D0006AA035 /* FaceCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA515791F1307D0006AA035 /* FaceCameraController.swift */; };
 		4BA5157D1F1307D0006AA035 /* FaceCamera.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BA5157B1F1307D0006AA035 /* FaceCamera.storyboard */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B26BB291F15AD3800826641 /* AppUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtility.swift; sourceTree = "<group>"; };
 		4BA515741F1307D0006AA035 /* MyFacePlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyFacePlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BA515771F1307D0006AA035 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4BA515791F1307D0006AA035 /* FaceCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceCameraController.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				4BA5158B1F131AED006AA035 /* AppConstants.swift */,
 				4BA5158D1F133F00006AA035 /* FaceManager.swift */,
 				4BA515991F1357FB006AA035 /* AppViewController.swift */,
+				4B26BB291F15AD3800826641 /* AppUtility.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				4BA5158E1F133F00006AA035 /* FaceManager.swift in Sources */,
 				4BA515781F1307D0006AA035 /* AppDelegate.swift in Sources */,
 				4BA5159C1F136A1A006AA035 /* FaceInfo.swift in Sources */,
+				4B26BB2A1F15AD3800826641 /* AppUtility.swift in Sources */,
 				4BA515901F134A76006AA035 /* FaceCameraViewModel.swift in Sources */,
 				4BA5158C1F131AED006AA035 /* AppConstants.swift in Sources */,
 				4BA515A81F149D67006AA035 /* ConfirmController.swift in Sources */,

@@ -25,6 +25,8 @@ class FaceCameraViewModel {
         result.append(FaceInfo(UIImage(named: "icon_face6")!, false))
         result.append(FaceInfo(UIImage(named: "icon_face7")!, false))
         result.append(FaceInfo(UIImage(named: "icon_face8")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face9")!, false))
+        result.append(FaceInfo(UIImage(named: "icon_face10")!, false))
         
         let _ = (0..<result.count).filter{faceType.rawValue == $0}.map{result[$0].isSelected.value = true}
         faceInfos.value = result
