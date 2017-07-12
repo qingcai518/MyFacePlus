@@ -151,13 +151,14 @@ extension FaceCameraController {
             var width = faceFeature.bounds.width
             var height = faceFeature.bounds.height
             
-            originY = screenHeight - height - originY
 //            originY = imageSize.height - height - originY
             
             originX = originX * (screenWidth / imageSize.width)
             originY = originY * (screenHeight / imageSize.height)
             width = width * (screenWidth / imageSize.width)
             height = height * (screenHeight / imageSize.height)
+            
+            originY = screenHeight - height - originY
             
             let frame = CGRect(x: originX, y: originY, width: width, height: height)
             print("frame = \(frame)")
