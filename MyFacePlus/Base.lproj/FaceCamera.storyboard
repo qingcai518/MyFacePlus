@@ -23,7 +23,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSv-cg-VoT">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="507"/>
                                 <subviews>
-                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="vxw-ic-Uex">
+                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="vxw-ic-Uex">
                                         <rect key="frame" x="-2" y="461" width="379" height="31"/>
                                     </slider>
                                 </subviews>

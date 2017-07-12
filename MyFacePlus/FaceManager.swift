@@ -49,27 +49,24 @@ class FaceManager {
         return blendFilter.outputImage
     }
     
-    func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?) -> CIImage? {
+    func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float ) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
         
         let faceRect = getFaceFrame(with: faceObject)
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.height * 2 / 3, width: faceRect.width, height: faceRect.height / 3)
         
-        return strechImage(inputImage, partRect)
-    }
-    
-    private func strechImage(_ inputImage : CIImage, _ rect : CGRect) -> CIImage? {
         guard let filter = CIFilter(name: "CIStretchCrop") else {
-            print("fail to get filter.")
+            print("failt to get filter.")
             return inputImage
         }
         
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
-        let outputImage = filter.outputImage
+        filter.setValue(value, forKey: "inputCenterStretchAmount")
+        filter.setValue(value, forKey: "inputCropAmount")
         
-        return outputImage
+        return filter.outputImage
     }
     
 //    private func strechImage(_ inputImage: CIImage, _ rect: CGRect) -> CIImage? {
