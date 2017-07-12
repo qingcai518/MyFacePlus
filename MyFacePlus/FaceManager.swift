@@ -49,6 +49,18 @@ class FaceManager {
         return blendFilter.outputImage
     }
     
+    func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?) -> CIImage? {
+        guard let inputImage = inputImage else {return nil}
+        guard let faceObject = faceObject else {return nil}
+        
+        guard let filter = CIFilter(name: "CISharpenLuminance") else {return nil}
+        filter.setDefaults()
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(10, forKey: kCIInputSharpnessKey)
+        return filter.outputImage
+        
+    }
+    
     /**
      * 图片合成
      */

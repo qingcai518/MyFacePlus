@@ -22,6 +22,8 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         // モザイクを選択する場合.
         if viewModel.faceType == .mosaic {
             if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {ciImage = image}
+        } else if viewModel.faceType == .girl {
+            if let image = FaceManager.shared.makeShinFace(with: ciImage, faceObject) {ciImage = image}
         }
         
         // fit screen.
@@ -118,7 +120,7 @@ extension FaceCameraController {
     fileprivate func addSlider() {
         slider.isHidden = false
         
-        detectFace()
+//        detectFace()
     }
     
     fileprivate func removeSlider() {
@@ -142,20 +144,13 @@ extension FaceCameraController {
             
             faceFeatureCount += 1
             let frame = FaceManager.shared.getFaceFrame(with: faceFeature, ciImage.extent.size)
-//            if tempView == nil {
-//                tempView = UIView()
-//                tempView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
-//                self.view.addSubview(tempView)
-//            }
-//            
-//            tempView.frame = frame
+            if tempView == nil {
+                tempView = UIView()
+                tempView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
+                self.view.addSubview(tempView)
+            }
             
-            // add filter
-            let filter = CIFilter(name: "CISharpenLuminance")
-            filter?.setDefaults()
-            filter?.setValue(ciImage, forKey: kCIInputImageKey)
-            filter?.setValue(10, forKey: kCIInputSharpnessKey)
-            self.ciImage = filter?.outputImage
+            tempView.frame = frame
         }
         
         if faceFeatureCount == 0, tempView != nil {
