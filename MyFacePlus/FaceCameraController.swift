@@ -16,9 +16,12 @@ class FaceCameraController: AppViewController {
     @IBOutlet weak var cameraBtn: UIButton!
     @IBOutlet weak var switchBtn: UIButton!
     @IBOutlet weak var closeView: UIView!
+    @IBOutlet weak var slider: UISlider!
     
     // for mengpai.
     var barcaView : BarcaView!
+    
+    var tempView : UIView! // dummy.
     
     lazy var captureSession = AVCaptureSession()
     lazy var previewLayer = CALayer()
@@ -147,6 +150,8 @@ extension FaceCameraController {
         dataOutput.alwaysDiscardsLateVideoFrames = true
         dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoqueue"))
         captureSession.addOutput(dataOutput)
+        
+        
         
         // face dect.
         let metadataOutput = AVCaptureMetadataOutput()

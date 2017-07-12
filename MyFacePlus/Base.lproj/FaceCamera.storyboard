@@ -22,7 +22,17 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSv-cg-VoT">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="507"/>
+                                <subviews>
+                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="vxw-ic-Uex">
+                                        <rect key="frame" x="-2" y="461" width="379" height="31"/>
+                                    </slider>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="vxw-ic-Uex" firstAttribute="leading" secondItem="dSv-cg-VoT" secondAttribute="leading" id="eeG-bL-FCQ"/>
+                                    <constraint firstAttribute="trailing" secondItem="vxw-ic-Uex" secondAttribute="trailing" id="smh-BD-pzx"/>
+                                    <constraint firstAttribute="bottom" secondItem="vxw-ic-Uex" secondAttribute="bottom" constant="16" id="yI2-SP-QB4"/>
+                                </constraints>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bhA-dq-xwL">
                                 <rect key="frame" x="0.0" y="507" width="375" height="160"/>
@@ -117,6 +127,7 @@
                         <outlet property="closeView" destination="dSv-cg-VoT" id="9QU-Gj-wBt"/>
                         <outlet property="collectionView" destination="bhA-dq-xwL" id="krO-6t-3BF"/>
                         <outlet property="showFaceBtn" destination="UZq-4k-g3V" id="fqg-uH-6ZB"/>
+                        <outlet property="slider" destination="vxw-ic-Uex" id="Hrn-ZI-svL"/>
                         <outlet property="switchBtn" destination="pSx-Sr-evm" id="NTp-EB-aAn"/>
                     </connections>
                 </viewController>

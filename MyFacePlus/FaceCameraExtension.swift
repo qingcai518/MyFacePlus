@@ -25,18 +25,19 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         // fit screen.
-        var transform = CGAffineTransform(rotationAngle: 0)
-        switch orientation {
-        case .portrait:
-            transform = CGAffineTransform(rotationAngle: CGFloat(-Double.pi / 2.0))
-        case .portraitUpsideDown:
-            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2.0))
-        case .landscapeRight:
-            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
-        default:
-            transform = CGAffineTransform(rotationAngle: 0)
-        }
-        ciImage = ciImage?.applying(transform)
+        connection.videoOrientation = .portrait
+//        var transform = CGAffineTransform(rotationAngle: 0)
+//        switch orientation {
+//        case .portrait:
+//            transform = CGAffineTransform(rotationAngle: CGFloat(-Double.pi / 2.0))
+//        case .portraitUpsideDown:
+//            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2.0))
+//        case .landscapeRight:
+//            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
+//        default:
+//            transform = CGAffineTransform(rotationAngle: 0)
+//        }
+//        ciImage = ciImage?.applying(transform)
 
         
         DispatchQueue.main.async {
@@ -55,15 +56,22 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         switch type {
         case .barca:
             addBarcaView()
+            removeSlider()
+        case .girl:
+            addSlider()
+            removeBarcaView()
         default:
             removeBarcaView()
+            removeSlider()
         }
     }
-    
-    /**
-     * 種類2の効果 : BarcaView.
-     */
-    private func addBarcaView() {
+}
+
+/**
+ * face1. barca
+ */
+extension FaceCameraController {
+    fileprivate func addBarcaView() {
         // 顔を検知されなかった場合.
         guard let faceObject = faceObject else {
             removeBarcaView()
@@ -95,17 +103,78 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let recognizer = UITapGestureRecognizer()
         recognizer.rx.event.bind { [weak self] sender in
             self?.viewModel.mode.value = .normal
-        }.addDisposableTo(disposeBag)
+            }.addDisposableTo(disposeBag)
         barcaView.addGestureRecognizer(recognizer)
     }
     
-    private func removeBarcaView() {
+    fileprivate func removeBarcaView() {
         if barcaView != nil {
             barcaView.removeFromSuperview()
             barcaView = nil
         }
     }
+}
+
+/**
+ * face10. modify face
+ */
+extension FaceCameraController {
+    fileprivate func addSlider() {
+        slider.isHidden = false
+        
+        detectFace()
+    }
     
+    fileprivate func removeSlider() {
+        slider.isHidden = true
+    }
+    
+    private func detectFace() {
+        guard let ciImage = ciImage else {return}
+        
+        let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
+        guard let faceFeatures = detector?.features(in: ciImage) else {return}
+        
+        
+        let imageSize = ciImage.extent.size
+        
+        print("image size = \(imageSize)")
+        print("screen size = \(screenWidth), \(screenHeight)")
+        
+        var faceFeatureCount = 0
+        for feature in faceFeatures {
+            guard let faceFeature = feature as? CIFaceFeature else {continue}
+            
+            faceFeatureCount += 1
+            var originX = faceFeature.bounds.origin.x
+            var originY = faceFeature.bounds.origin.y
+            var width = faceFeature.bounds.width
+            var height = faceFeature.bounds.height
+            
+            originY = screenHeight - height - originY
+//            originY = imageSize.height - height - originY
+            
+            originX = originX * (screenWidth / imageSize.width)
+            originY = originY * (screenHeight / imageSize.height)
+            width = width * (screenWidth / imageSize.width)
+            height = height * (screenHeight / imageSize.height)
+            
+            let frame = CGRect(x: originX, y: originY, width: width, height: height)
+            print("frame = \(frame)")
+            if tempView == nil {
+                tempView = UIView()
+                tempView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
+                self.view.addSubview(tempView)
+            }
+            
+            tempView.frame = frame
+        }
+        
+        if faceFeatureCount == 0, tempView != nil {
+            tempView.removeFromSuperview()
+            tempView = nil
+        }
+    }
 }
 
 extension FaceCameraController : AVCaptureMetadataOutputObjectsDelegate {

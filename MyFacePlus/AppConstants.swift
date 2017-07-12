@@ -28,6 +28,8 @@ enum FaceType: Int {
     case glass
     case wolf
     case shit
+    case dog
+    case girl
 }
 
 struct UDKey {
