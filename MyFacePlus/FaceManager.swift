@@ -65,28 +65,31 @@ class FaceManager {
         return result
     }
     
-
-//    func makeBarcaFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?) -> CIImage? {
-//        guard let inputImage = inputImage else {return nil}
-////        guard let faceObject = faceObject else {return nil}
-//        
-//        let originImage = UIImage(ciImage: inputImage)
-////        let barcaImage = UIImage.animatedImage(with: [UIImage(named: "icon_face2")!, UIImage(named: "icon_face2_big")!], duration: 0.3)
-//        let barcaImage = UIImage(named: "icon_face2")!
-//        
-//        let size = originImage.size
-//        UIGraphicsBeginImageContext(size)
-//        
-//        originImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-//        let barcaWidth = CGFloat(64)
-//        
-//        barcaImage.draw(in: CGRect(x: (size.width - barcaWidth)/2, y: (size.height - barcaWidth)/2, width: barcaWidth, height: barcaWidth))
-//        let result = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        
-//        let data = UIImagePNGRepresentation(result!)
-//        let ciImage = CIImage(data: data!)
-//        
-//        return ciImage
-//    }
+    func getFaceFrame(with faceObject : AVMetadataFaceObject) -> CGRect {
+        let centerX = screenWidth * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
+        let centerY = screenHeight * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
+        
+        let width = screenWidth * faceObject.bounds.size.height
+        let height = screenHeight * faceObject.bounds.size.width
+        
+        let originX = centerX - width / 2
+        let originY = centerY - height / 2
+        
+        return CGRect(x: originX, y: originY, width: width, height: height)
+    }
+    
+    func getFaceFrame(with faceFeature: CIFaceFeature, _ imageSize: CGSize) -> CGRect {
+        var originX = faceFeature.bounds.origin.x
+        var originY = faceFeature.bounds.origin.y
+        var width = faceFeature.bounds.width
+        var height = faceFeature.bounds.height
+        
+        originX = originX * (screenWidth / imageSize.width)
+        originY = originY * (screenHeight / imageSize.height)
+        width = width * (screenWidth / imageSize.width)
+        height = height * (screenHeight / imageSize.height)
+        originY = screenHeight - height - originY    // 位置補正をする.
+        
+        return CGRect(x: originX, y: originY, width: width, height: height)
+    }
 }

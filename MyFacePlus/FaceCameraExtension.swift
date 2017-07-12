@@ -25,21 +25,28 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         // fit screen.
-        connection.videoOrientation = .portrait
-//        var transform = CGAffineTransform(rotationAngle: 0)
+        switch orientation {
+        case .landscapeRight:
+            connection.videoOrientation = .landscapeRight
+        case .landscapeLeft:
+            connection.videoOrientation = .landscapeLeft
+        case .portraitUpsideDown:
+            connection.videoOrientation = .portraitUpsideDown
+        default:
+            connection.videoOrientation = .portrait
+        }
+        
 //        switch orientation {
 //        case .portrait:
-//            transform = CGAffineTransform(rotationAngle: CGFloat(-Double.pi / 2.0))
+//            ciImage = ciImage?.applying(CGAffineTransform(rotationAngle: CGFloat(-Double.pi / 2.0)))
 //        case .portraitUpsideDown:
-//            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2.0))
+//            ciImage = ciImage?.applying(CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2.0)))
 //        case .landscapeRight:
-//            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
+//            ciImage = ciImage?.applying(CGAffineTransform(rotationAngle: CGFloat(Double.pi)))
 //        default:
-//            transform = CGAffineTransform(rotationAngle: 0)
+//            break
 //        }
-//        ciImage = ciImage?.applying(transform)
 
-        
         DispatchQueue.main.async {
             if let image = self.ciImage {
                 self.previewLayer.contents = self.context.createCGImage(image, from: image.extent)
@@ -72,23 +79,12 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
  */
 extension FaceCameraController {
     fileprivate func addBarcaView() {
-        // 顔を検知されなかった場合.
         guard let faceObject = faceObject else {
             removeBarcaView()
             return
         }
         
-        //-90度算法
-        var originX = screenWidth * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)   // ---x中间位置.
-        let originY = screenHeight * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
-        
-        let width = screenWidth * faceObject.bounds.size.height / 4
-        let height = screenHeight * faceObject.bounds.size.width / 4
-        
-        // 靠右表示.
-        originX = originX + width
-        
-        // 顔を検知された場合.
+        let faceFrame = FaceManager.shared.getFaceFrame(with: faceObject)
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
             barcaView = tempView
             self.view.addSubview(barcaView)
@@ -98,12 +94,12 @@ extension FaceCameraController {
             self.view.bringSubview(toFront: closeView)
             self.view.bringSubview(toFront: switchBtn)
         }
-        barcaView.setIconPosition(originX, originY, width, height)
+        barcaView.setIconPosition(faceFrame.origin.x + 20, faceFrame.origin.y + 10, faceFrame.width, faceFrame.height)
         
         let recognizer = UITapGestureRecognizer()
         recognizer.rx.event.bind { [weak self] sender in
             self?.viewModel.mode.value = .normal
-            }.addDisposableTo(disposeBag)
+        }.addDisposableTo(disposeBag)
         barcaView.addGestureRecognizer(recognizer)
     }
     
@@ -127,6 +123,11 @@ extension FaceCameraController {
     
     fileprivate func removeSlider() {
         slider.isHidden = true
+        
+        if (tempView != nil) {
+            tempView.removeFromSuperview()
+            tempView = nil
+        }
     }
     
     private func detectFace() {
@@ -135,33 +136,12 @@ extension FaceCameraController {
         let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
         guard let faceFeatures = detector?.features(in: ciImage) else {return}
         
-        
-        let imageSize = ciImage.extent.size
-        
-        print("image size = \(imageSize)")
-        print("screen size = \(screenWidth), \(screenHeight)")
-        
         var faceFeatureCount = 0
         for feature in faceFeatures {
             guard let faceFeature = feature as? CIFaceFeature else {continue}
             
             faceFeatureCount += 1
-            var originX = faceFeature.bounds.origin.x
-            var originY = faceFeature.bounds.origin.y
-            var width = faceFeature.bounds.width
-            var height = faceFeature.bounds.height
-            
-//            originY = imageSize.height - height - originY
-            
-            originX = originX * (screenWidth / imageSize.width)
-            originY = originY * (screenHeight / imageSize.height)
-            width = width * (screenWidth / imageSize.width)
-            height = height * (screenHeight / imageSize.height)
-            
-            originY = screenHeight - height - originY
-            
-            let frame = CGRect(x: originX, y: originY, width: width, height: height)
-            print("frame = \(frame)")
+            let frame = FaceManager.shared.getFaceFrame(with: faceFeature, ciImage.extent.size)
             if tempView == nil {
                 tempView = UIView()
                 tempView.backgroundColor = UIColor.red.withAlphaComponent(0.5)

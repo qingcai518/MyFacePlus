@@ -24,7 +24,8 @@ class FaceCameraController: AppViewController {
     var tempView : UIView! // dummy.
     
     lazy var captureSession = AVCaptureSession()
-    lazy var previewLayer = CALayer()
+//    lazy var previewLayer = CALayer()
+    lazy var previewLayer = AVCaptureVideoPreviewLayer()
     lazy var filter = CIFilter()
     
     var faceObject : AVMetadataFaceObject?
@@ -136,7 +137,7 @@ extension FaceCameraController {
     fileprivate func setupCaptureSession() {
         captureSession.beginConfiguration()
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        captureDevice = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo).first as? AVCaptureDevice
+        captureDevice = getDevice(with: .front)
         
         do {
             deviceInput = try AVCaptureDeviceInput(device: captureDevice)
@@ -151,8 +152,6 @@ extension FaceCameraController {
         dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoqueue"))
         captureSession.addOutput(dataOutput)
         
-        
-        
         // face dect.
         let metadataOutput = AVCaptureMetadataOutput()
         metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
@@ -161,6 +160,11 @@ extension FaceCameraController {
         
         captureSession.commitConfiguration()
         captureSession.startRunning()
+    }
+    
+    fileprivate func getDevice(with position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+        guard let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) else {return nil}
+        return devices.map{$0 as? AVCaptureDevice}.filter{$0?.position == position}.first as? AVCaptureDevice
     }
 }
 
@@ -190,11 +194,6 @@ extension FaceCameraController {
         animation.type = kCATransitionFade
         self.view.layer.add(animation, forKey: nil)
         faceObject = nil
-    }
-    
-    private func getDevice(with position: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        guard let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) else {return nil}
-        return devices.map{$0 as? AVCaptureDevice}.filter{$0?.position == position}.first as? AVCaptureDevice
     }
     
     @IBAction func showFaces() {
