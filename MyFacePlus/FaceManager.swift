@@ -56,22 +56,50 @@ class FaceManager {
         let faceRect = getFaceFrame(with: faceObject)
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.height * 2 / 3, width: faceRect.width, height: faceRect.height / 3)
         
-        print("face rect = \(faceRect)")
-        print("part rect = \(partRect)")
-        
-        guard let cgImage = CIContext(options: nil).createCGImage(inputImage, from: inputImage.extent) else {
-            print("can not get cg image.")
+        return strechImage(inputImage, partRect)
+    }
+    
+    private func strechImage(_ inputImage : CIImage, _ rect : CGRect) -> CIImage? {
+        guard let filter = CIFilter(name: "CIStretchCrop") else {
+            print("fail to get filter.")
             return inputImage
         }
-        let sourceImage = UIImage(cgImage: cgImage)
         
-        if let resultImage = sourceImage.applyStrech(in: faceRect) {
-            return resultImage.ciImage
-        }
+        filter.setDefaults()
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        let outputImage = filter.outputImage
         
-        print("22222")
-        return inputImage
+        return outputImage
     }
+    
+//    private func strechImage(_ inputImage: CIImage, _ rect: CGRect) -> CIImage? {
+//        guard let cgImage = CIContext(options: nil).createCGImage(inputImage, from: rect) else {
+//            print("fail to get part cgImage")
+//            return inputImage
+//        }
+//        
+//        guard let filter = CIFilter(name: "CIStretchCrop") else {
+//            print("fail to get filter.")
+//            return inputImage
+    
+//        }
+//        
+//        filter.setDefaults()
+//        let ciImage = CIImage(cgImage: cgImage)
+//        filter.setValue(ciImage, forKey: kCIInputImageKey)
+//        guard let partImage = filter.outputImage else {
+//            print("333")
+//            return inputImage
+//        }
+//        
+//        // get base uiimage.
+//        let baseImage = UIImage(ciImage: inputImage)
+//        let maskImage = UIImage(ciImage: partImage)
+//        
+//        let result = mergeImage(baseImage, maskImage, rect)
+//        return result?.ciImage
+//    }
+    
     
     /**
      * 图片合成

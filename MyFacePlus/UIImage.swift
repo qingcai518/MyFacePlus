@@ -18,34 +18,15 @@ extension UIImage {
     }
     
     func strechImage() -> UIImage? {
-        guard let cgImage = self.cgImage else {
-            print("fail to get self cgImage")
-            return self
-        }
-        
-        guard let filter = CIFilter(name: "CIGaussianBlur") else {
-            print("fail to get filter.")
-            return self
-        }
-        
+        guard let cgImage = self.cgImage else {return self}
+        guard let filter = CIFilter(name: "CIStretchCrop") else {return self}
         let inputImage = CIImage(cgImage: cgImage)
         filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue("20", forKey: kCIInputRadiusKey)
-        if let blurred = filter.outputImage {
-            return UIImage(ciImage: blurred)
+        if let outputImage = filter.outputImage {
+            return UIImage(ciImage: outputImage)
         }
         
-        return nil
-        
-//        guard let cgImage = self.cgImage else {return self}
-//        guard let filter = CIFilter(name: "CIStretchCrop") else {return self}
-//        let inputImage = CIImage(cgImage: cgImage)
-//        filter.setValue(inputImage, forKey: kCIInputImageKey)
-//        if let outputImage = filter.outputImage {
-//            return UIImage(ciImage: outputImage)
-//        } else {
-//            return self
-//        }
+        return self
     }
     
     func drawImage(in rect: CGRect, _ inputImage : UIImage) -> UIImage? {
