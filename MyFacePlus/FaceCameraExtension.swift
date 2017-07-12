@@ -142,13 +142,20 @@ extension FaceCameraController {
             
             faceFeatureCount += 1
             let frame = FaceManager.shared.getFaceFrame(with: faceFeature, ciImage.extent.size)
-            if tempView == nil {
-                tempView = UIView()
-                tempView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
-                self.view.addSubview(tempView)
-            }
+//            if tempView == nil {
+//                tempView = UIView()
+//                tempView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
+//                self.view.addSubview(tempView)
+//            }
+//            
+//            tempView.frame = frame
             
-            tempView.frame = frame
+            // add filter
+            let filter = CIFilter(name: "CISharpenLuminance")
+            filter?.setDefaults()
+            filter?.setValue(ciImage, forKey: kCIInputImageKey)
+            filter?.setValue(10, forKey: kCIInputSharpnessKey)
+            self.ciImage = filter?.outputImage
         }
         
         if faceFeatureCount == 0, tempView != nil {
