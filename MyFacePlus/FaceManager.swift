@@ -53,11 +53,14 @@ class FaceManager {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
         
-        guard let filter = CIFilter(name: "CICircularWrap") else {return nil}
+        
+        // CIStretchCrop
+        guard let filter = CIFilter(name: "CIStretchCrop") else {return nil}
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(1, forKey: "inputCenterStretchAmount")
+        filter.setValue(0.1, forKey: "inputCropAmount")
         return filter.outputImage
-        
     }
     
     /**
