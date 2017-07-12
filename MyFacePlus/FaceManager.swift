@@ -64,38 +64,12 @@ class FaceManager {
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
         filter.setValue(value, forKey: "inputCenterStretchAmount")
+        filter.setValue(0, forKey: "inputCropAmount")
+        
+        // TODO. Thin face only a part of image.
         
         return filter.outputImage
     }
-    
-//    private func strechImage(_ inputImage: CIImage, _ rect: CGRect) -> CIImage? {
-//        guard let cgImage = CIContext(options: nil).createCGImage(inputImage, from: rect) else {
-//            print("fail to get part cgImage")
-//            return inputImage
-//        }
-//        
-//        guard let filter = CIFilter(name: "CIStretchCrop") else {
-//            print("fail to get filter.")
-//            return inputImage
-    
-//        }
-//        
-//        filter.setDefaults()
-//        let ciImage = CIImage(cgImage: cgImage)
-//        filter.setValue(ciImage, forKey: kCIInputImageKey)
-//        guard let partImage = filter.outputImage else {
-//            print("333")
-//            return inputImage
-//        }
-//        
-//        // get base uiimage.
-//        let baseImage = UIImage(ciImage: inputImage)
-//        let maskImage = UIImage(ciImage: partImage)
-//        
-//        let result = mergeImage(baseImage, maskImage, rect)
-//        return result?.ciImage
-//    }
-    
     
     /**
      * 图片合成
