@@ -64,7 +64,6 @@ class FaceManager {
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
         filter.setValue(value, forKey: "inputCenterStretchAmount")
-        filter.setValue(value, forKey: "inputCropAmount")
         
         return filter.outputImage
     }

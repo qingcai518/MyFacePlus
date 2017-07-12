@@ -23,7 +23,8 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         if viewModel.faceType == .mosaic {
             if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {ciImage = image}
         } else if viewModel.faceType == .girl {
-            if let image = FaceManager.shared.makeShinFace(with: ciImage, faceObject, slider.value) {ciImage = image}
+            if let image = FaceManager.shared.makeShinFace(with: ciImage, faceObject, 1 -
+                slider.value) {ciImage = image}
         }
         
         // fit screen.
