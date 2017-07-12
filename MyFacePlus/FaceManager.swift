@@ -53,14 +53,24 @@ class FaceManager {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
         
+        let faceRect = getFaceFrame(with: faceObject)
+        let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.height * 2 / 3, width: faceRect.width, height: faceRect.height / 3)
         
-        // CIStretchCrop
-        guard let filter = CIFilter(name: "CIStretchCrop") else {return nil}
-        filter.setDefaults()
-        filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(1, forKey: "inputCenterStretchAmount")
-        filter.setValue(0.1, forKey: "inputCropAmount")
-        return filter.outputImage
+        print("face rect = \(faceRect)")
+        print("part rect = \(partRect)")
+        
+        guard let cgImage = CIContext(options: nil).createCGImage(inputImage, from: inputImage.extent) else {
+            print("can not get cg image.")
+            return inputImage
+        }
+        let sourceImage = UIImage(cgImage: cgImage)
+        
+        if let resultImage = sourceImage.applyStrech(in: faceRect) {
+            return resultImage.ciImage
+        }
+        
+        print("22222")
+        return inputImage
     }
     
     /**
