@@ -53,10 +53,9 @@ class FaceManager {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
         
-        guard let filter = CIFilter(name: "CISharpenLuminance") else {return nil}
+        guard let filter = CIFilter(name: "CICircularWrap") else {return nil}
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(10, forKey: kCIInputSharpnessKey)
         return filter.outputImage
         
     }
