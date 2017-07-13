@@ -54,19 +54,24 @@ class FaceManager {
         guard let faceObject = faceObject else {return nil}
         
         let faceRect = getFaceFrame(with: faceObject)
+        // ここの部分をfilterする.
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.height * 2 / 3, width: faceRect.width, height: faceRect.height / 3)
         
-        guard let filter = CIFilter(name: "CIStretchCrop") else {
-            print("failt to get filter.")
-            return inputImage
-        }
-        
+        // CIStretchCrop
+        guard let filter = CIFilter(name: "CIStretchCrop") else { return inputImage }
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
         filter.setValue(value, forKey: "inputCenterStretchAmount")
         filter.setValue(0, forKey: "inputCropAmount")
-        
         // TODO. Thin face only a part of image.
+        
+        // CIBumpDistortionLinear
+//        guard let filter = CIFilter(name: "CIBumpDistortionLinear") else {return inputImage}
+//        filter.setDefaults()
+//        filter.setValue(inputImage, forKey: kCIInputImageKey)
+//        filter.setValue(value, forKey: "inputScale")
+//        let vector = CIVector(cgPoint: CGPoint(x: 100, y: 100))
+//        filter.setValue(vector, forKey: "inputCenter")
         
         return filter.outputImage
     }
