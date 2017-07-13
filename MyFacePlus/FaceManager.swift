@@ -38,7 +38,7 @@ class FaceManager {
         let centerX = screenWidth * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
         let centerY = screenHeight * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
         let inputCenter = CIVector(x: centerX, y: centerY)
-        gradientFilter.setValue(inputCenter, forKey: "inputCenter")
+        gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
         guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: UIScreen.main.bounds) else {return nil}
         
         // 合成フィルタ.
@@ -79,7 +79,6 @@ class FaceManager {
         let faceRect = getFaceFrame(with: faceObject)
         // ここの部分をfilterする.
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.height * 2 / 3, width: faceRect.width, height: faceRect.height / 3)
-        let vector = CIVector(cgRect: partRect)
         
         // CIStretchCrop
         guard let filter = CIFilter(name: "CIStretchCrop") else { return inputImage }
@@ -89,22 +88,24 @@ class FaceManager {
         filter.setValue(0, forKey: "inputCropAmount")
         // TODO. Thin face only a part of image.
         
-        print("current part rect = \(partRect)")
+        // 選択範囲.
+        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
+        gradientFilter.setValue(partRect.width, forKey: "inputRadius0")
+        gradientFilter.setValue(partRect.width + 1, forKey: "inputRadius1")
         
-//        // CIBumpDistortionLinear
-//        guard let filter = CIFilter(name: "CIBumpDistortionLinear") else {return inputImage}
-//        filter.setDefaults()
-//        filter.setValue(inputImage, forKey: kCIInputImageKey)
-//        filter.setValue(value, forKey: "inputScale")
-//        let vector = CIVector(cgRect: partRect)
-//        filter.setValue(vector, forKey: "inputCenter")
+        let centerX = partRect.origin.x + partRect.width / 2
+        let centerY = partRect.origin.y + partRect.height / 2
+        let inputCenter = CIVector(x: centerX, y: centerY)
+        gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
+        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
+
+        // 合成
+        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
+        blendFilter.setValue(filter.outputImage, forKey: kCIInputImageKey)
+        blendFilter.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
+        blendFilter.setValue(gradientOutputImage, forKey: kCIInputMaskImageKey)
         
-//        // 合成.
-//        let composeFilter = CIFilter(name: "CIMinimumCompositing")
-//        composeFilter?.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
-//        composeFilter?.setValue(filter.outputImage, forKey: kCIInputImageKey)
-        
-        return filter.outputImage
+        return blendFilter.outputImage
     }
     
     /**
