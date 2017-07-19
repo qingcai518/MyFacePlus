@@ -138,6 +138,7 @@ extension FaceCameraController {
             faceFeatureCount += 1
             let frame = FaceManager.shared.getFaceFrame(with: faceFeature, ciImage.extent.size)
             if glassView == nil {
+                print("11111")
                 glassView = UIImageView()
                 glassView.contentMode = .scaleAspectFit
                 glassView.clipsToBounds = true
@@ -147,10 +148,16 @@ extension FaceCameraController {
             glassView.frame = frame
         }
         
-        if faceFeatureCount == 0, glassView != nil {
+        if faceFeatureCount == 0 && glassView != nil {
+            print("2222")
             glassView.removeFromSuperview()
             glassView = nil
         }
+        
+//        if faceFeatureCount == 0, glassView != nil {
+//            glassView.removeFromSuperview()
+//            glassView = nil
+//        }
     }
     
     fileprivate func removeGlass() {
