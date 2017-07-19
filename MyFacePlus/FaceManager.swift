@@ -58,12 +58,16 @@ class FaceManager {
         guard let partCGImage = cgImage.cropping(to: partRect) else {return inputImage}
         let partImage = CIImage(cgImage: partCGImage)
         
+        print("input image size = \(inputImage.extent.size)")
+        print("part image size = \(partImage.extent.size)")
+        
 //        guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
 //        filter.setDefaults()
 //        filter.setValue(partImage, forKey: kCIInputImageKey)
 //        filter.setValue(value, forKey: "inputCenterStretchAmount")
 //        filter.setValue(0, forKey: "inputCropAmount")
 //        guard let outputImage = filter.outputImage?.cropping(to: inputImage.extent) else {return inputImage}
+        
         
         return partImage
     }
