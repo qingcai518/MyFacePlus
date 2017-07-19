@@ -37,15 +37,15 @@ class FaceManager {
         pixelFilter.setValue(inputImage, forKey: kCIInputImageKey)
         pixelFilter.setValue(60, forKey: kCIInputScaleKey)
         
-//        // 範囲フィルタ.
-//        let maxSize = max(faceRect.width * screenWidth / inputImage.extent.size.width, faceRect.height * screenHeight / inputImage.extent.size.height)
-        let minSize = min(faceRect.width, faceRect.height)
+        // 範囲フィルタ.
+        let radius = faceObject.bounds.size.width * inputImage.extent.size.width
+        
         let centerX = faceRect.origin.x + faceRect.size.width / 2
         let centerY = inputImage.extent.height - faceRect.origin.y - faceRect.size.height / 2
         let inputCenter = CIVector(x: centerX, y: centerY)
         guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
-        gradientFilter.setValue(minSize, forKey: "inputRadius0")
-        gradientFilter.setValue(minSize + 1, forKey: "inputRadius1")
+        gradientFilter.setValue(radius, forKey: "inputRadius0")
+        gradientFilter.setValue(radius + 1, forKey: "inputRadius1")
         gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
         guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
 
