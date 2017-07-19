@@ -85,7 +85,8 @@ class FaceManager {
         
         // 変形対象の上の部分を切る.
 //        let frameTop = CIVector(x: 0, y: 0, z: inputImage.extent.size.width, w: partRect.maxY)
-        let frameTop = CIVector(x: 0, y: 0, z: screenWidth, w: 200)
+//        let frameTop = CIVector(x: 0, y: 0, z: screenWidth, w: 200)
+        let frameTop = CIVector(x: 0, y: 0, z: inputImage.extent.size.width, w: 300)
         guard let topFilter = CIFilter(name: "CICrop") else {return inputImage}
         topFilter.setDefaults()
         topFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
@@ -95,7 +96,7 @@ class FaceManager {
         
         // 変形対象部分を切る.
 //        let frameVector = CIVector(x: partRect.origin.x, y: inputImage.extent.size.height - partRect.origin.y - partRect.size.height, z: partRect.size.width, w: partRect.size.height)
-        let frameVector = CIVector(x: 0, y: 200, z: screenWidth, w: 100)
+        let frameVector = CIVector(x: 0, y: 300, z: inputImage.extent.size.width, w: 200)
         guard let cropFilter = CIFilter(name: "CICrop") else { return inputImage }
         cropFilter.setDefaults()
         cropFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
@@ -113,7 +114,7 @@ class FaceManager {
         print("filter image = \(outputImage)")
         
         // 変形対象の下の部分を切る.
-        let frameBottom = CIVector(x: 0, y: 300, z: screenWidth, w: screenHeight - 300)
+        let frameBottom = CIVector(x: 0, y: 500, z: inputImage.extent.size.width, w: inputImage.extent.size.height - 500)
 //        let frameBottom = CIVector(x: 0, y: partRect.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height - partRect.origin.y)
         guard let bottomFilter = CIFilter(name: "CICrop") else {return inputImage}
         bottomFilter.setDefaults()
@@ -124,9 +125,11 @@ class FaceManager {
         
         // 三つの部分を併合する.
         UIGraphicsBeginImageContext(UIScreen.main.bounds.size)
-        topUIImage.draw(in: CGRect(x: 0, y: 0, width: screenWidth, height: 200))
-        outputUIImage.draw(in: CGRect(x: 0, y: 200, width: screenWidth, height: 100))
-        bottomUIImage.draw(in: CGRect(x: 0, y: 300, width: screenWidth, height: screenHeight - 300))
+        
+        bottomUIImage.draw(in: CGRect(x: 0, y: 0, width: screenWidth, height: 300 * screenHeight / inputImage.extent.height))
+        outputUIImage.draw(in: CGRect(x: 0, y: 300 * screenHeight / inputImage.extent.height, width: screenWidth, height: 200 * screenHeight / inputImage.extent.height))
+        topUIImage.draw(in: CGRect(x: 0, y: 500 * screenHeight / inputImage.extent.height, width: screenWidth, height: screenHeight - 500 * screenHeight / inputImage.extent.height))
+        
         guard let resultUIImage = UIGraphicsGetImageFromCurrentImageContext() else {return inputImage}
         UIGraphicsEndImageContext()
         
