@@ -47,6 +47,31 @@ class FaceManager {
         return blendFilter.outputImage
     }
     
+    func makeGlassFace(with inputImage : CIImage?, _ context: CIContext) -> CIImage? {
+        guard let inputImage = inputImage else {return nil}
+        guard let maskImage = UIImage(named: "icon_glasses")?.ciImage else {return inputImage}
+        let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
+        guard let features = detector?.features(in: inputImage) else {return nil}
+        
+        for feature in features {
+            guard let faceFeature = feature as? CIFaceFeature else {continue}
+            let leftEyePosition = faceFeature.leftEyePosition
+            
+            print("left eye position = \(leftEyePosition)")
+            
+            // 合成.
+            guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
+            blendFilter.setValue(inputImage, forKey: kCIInputImageKey)
+            blendFilter.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
+            blendFilter.setValue(maskImage, forKey: kCIInputMaskImageKey)
+            
+            return blendFilter.outputImage
+        }
+        
+        print("1111")
+        return inputImage
+    }
+    
     func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}

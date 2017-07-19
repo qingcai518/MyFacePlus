@@ -23,8 +23,9 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         if viewModel.faceType == .mosaic {
             if let image = FaceManager.shared.makeMosaicFace(with: ciImage, faceObject) {ciImage = image}
         } else if viewModel.faceType == .girl {
-            if let image = FaceManager.shared.makeShinFace(with: ciImage, faceObject, 1 -
-                slider.value) {ciImage = image}
+            if let image = FaceManager.shared.makeShinFace(with: ciImage, faceObject, 1 - slider.value) {ciImage = image}
+        } else if viewModel.faceType == .glass {
+            if let image = FaceManager.shared.makeGlassFace(with: ciImage, context) {ciImage = image}
         }
         
         // fit screen.
@@ -67,19 +68,12 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         case .barca:
             addBarcaView()
             removeSlider()
-            removeGlass()
         case .girl:
             addSlider()
-            removeBarcaView()
-            removeGlass()
-        case .glass:
-            addGlass()
-            removeSlider()
             removeBarcaView()
         default:
             removeBarcaView()
             removeSlider()
-            removeGlass()
         }
     }
 }
@@ -118,60 +112,6 @@ extension FaceCameraController {
         if barcaView != nil {
             barcaView.removeFromSuperview()
             barcaView = nil
-        }
-    }
-}
-
-/**
- * face7. glass.
- */
-extension FaceCameraController {
-    fileprivate func addGlass() {
-        guard let ciImage = ciImage else {return}
-        let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
-        guard let faceFeatures = detector?.features(in: ciImage) else {return}
-        
-        var faceFeatureCount = 0
-        for feature in faceFeatures {
-            guard let faceFeature = feature as? CIFaceFeature else {continue}
-
-            let leftEyePosition = faceFeature.leftEyePosition
-            let rightEyePosition = faceFeature.rightEyePosition
-            
-            faceFeatureCount += 1
-
-            if leftEyeView == nil {
-                leftEyeView = UIView()
-                leftEyeView.backgroundColor = UIColor.green
-                view.addSubview(leftEyeView)
-            }
-            leftEyeView.frame = CGRect(x: leftEyePosition.x * screenWidth / ciImage.extent.size.width, y: (ciImage.extent.size.height - leftEyePosition.y) * screenHeight / ciImage.extent.height, width: 100, height: 20)
-            
-            if rightEyeView == nil {
-                rightEyeView = UIView()
-                rightEyeView.backgroundColor = UIColor.red
-                view.addSubview(rightEyeView)
-            }
-            rightEyeView.frame = CGRect(x: rightEyePosition.x * screenWidth / ciImage.extent.size.width, y: (ciImage.extent.size.height - rightEyePosition.y) * screenHeight / ciImage.extent.height, width: 100, height: 20)
-            break
-        }
-        
-        if faceFeatureCount == 0 {
-            removeGlass()
-        }
-    }
-    
-    fileprivate func removeGlass() {
-        if leftEyeView != nil {
-            print("remove left")
-            leftEyeView.removeFromSuperview()
-            leftEyeView = nil
-        }
-        
-        if rightEyeView != nil {
-            print("remove right")
-            rightEyeView.removeFromSuperview()
-            rightEyeView = nil
         }
     }
 }
