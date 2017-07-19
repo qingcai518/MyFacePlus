@@ -18,15 +18,6 @@ class FaceManager {
         let _ = filterNames.map{print($0)}
     }
     
-//    func makeMosaicFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?) -> CIImage? {
-//        guard let inputImage = inputImage else {return nil}
-//        guard let faceObject = faceObject else {return nil}
-//        let faceRect = getFaceFrame(with: faceObject)
-//        
-//        guard let pixelFilter = CIFilter(name: "CIPixellate") else {return nil}
-//        
-//    }
-    
     func makeMosaicFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
@@ -39,7 +30,6 @@ class FaceManager {
         
         // 範囲フィルタ.
         let radius = faceObject.bounds.size.width * inputImage.extent.size.width
-        
         let centerX = faceRect.origin.x + faceRect.size.width / 2
         let centerY = inputImage.extent.height - faceRect.origin.y - faceRect.size.height / 2
         let inputCenter = CIVector(x: centerX, y: centerY)
@@ -57,41 +47,46 @@ class FaceManager {
         return blendFilter.outputImage
     }
     
-    func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float ) -> CIImage? {
+    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
         
-        let faceRect = getFaceFrame(with: faceObject)
-        // ここの部分をfilterする.
-        let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.height * 2 / 3, width: faceRect.width, height: faceRect.height / 3)
+        // thin対象部分を取得する.
+        guard let cgImage = CIContext(options: nil).createCGImage(inputImage, from: inputImage.extent) else {return inputImage}
+        let faceRect = getFaceFrame(in: inputImage, faceObject)
+        let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
+        guard let partCGImage = cgImage.cropping(to: partRect) else {return inputImage}
+        let partImage = CIImage(cgImage: partCGImage)
         
-        // CIStretchCrop
-        guard let filter = CIFilter(name: "CIStretchCrop") else { return inputImage }
-        filter.setDefaults()
-        filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(value, forKey: "inputCenterStretchAmount")
-        filter.setValue(0, forKey: "inputCropAmount")
-        // TODO. Thin face only a part of image.
+//        guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
+//        filter.setDefaults()
+//        filter.setValue(partImage, forKey: kCIInputImageKey)
+//        filter.setValue(value, forKey: "inputCenterStretchAmount")
+//        filter.setValue(0, forKey: "inputCropAmount")
+//        guard let outputImage = filter.outputImage?.cropping(to: inputImage.extent) else {return inputImage}
         
-        // 選択範囲.
-        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
-        gradientFilter.setValue(partRect.width, forKey: "inputRadius0")
-        gradientFilter.setValue(partRect.width + 1, forKey: "inputRadius1")
-        
-        let centerX = partRect.origin.x + partRect.width / 2
-        let centerY = partRect.origin.y + partRect.height / 2
-        let inputCenter = CIVector(x: centerX, y: centerY)
-        gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
-        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
-
-        // 合成
-        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
-        blendFilter.setValue(filter.outputImage, forKey: kCIInputImageKey)
-        blendFilter.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
-        blendFilter.setValue(gradientOutputImage, forKey: kCIInputMaskImageKey)
-        
-        return blendFilter.outputImage
+        return partImage
     }
+    
+//    
+//    func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float ) -> CIImage? {
+//        guard let inputImage = inputImage else {return nil}
+//        guard let faceObject = faceObject else {return nil}
+//        
+//        // CIStretchCrop
+//        guard let filter = CIFilter(name: "CIStretchCrop") else { return inputImage }
+//        filter.setDefaults()
+//        filter.setValue(inputImage, forKey: kCIInputImageKey)
+//        filter.setValue(value, forKey: "inputCenterStretchAmount")
+//        filter.setValue(0, forKey: "inputCropAmount")
+//        // TODO. Thin face only a part of image.
+//        
+//        // 範囲フィルタ.
+//        
+//        
+//        
+//        return filter.outputImage
+//    }
     
     /**
      * 图片合成

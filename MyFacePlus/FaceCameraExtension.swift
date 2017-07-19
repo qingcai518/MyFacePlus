@@ -88,9 +88,6 @@ extension FaceCameraController {
         }
         
         let faceFrame = FaceManager.shared.getFaceFrame(with: faceObject)
-        
-        print("face frame for barca = \(faceFrame)")
-        
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
             barcaView = tempView
             self.view.addSubview(barcaView)
@@ -125,7 +122,7 @@ extension FaceCameraController {
     fileprivate func addSlider() {
         slider.isHidden = false
         
-        detectFace()
+//        detectFace()
     }
     
     fileprivate func removeSlider() {
