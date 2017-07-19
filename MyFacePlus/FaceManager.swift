@@ -108,12 +108,13 @@ class FaceManager {
         guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
         filter.setDefaults()
         filter.setValue(cropOutputImage, forKeyPath: kCIInputImageKey)
-        print("value = \(value)")
-        filter.setValue(value, forKeyPath: "inputCenterStretchAmount")
-        filter.setValue(0, forKeyPath: "inputCropAmount")
+        filter.setValue(1, forKey: "inputCenterStretchAmount")
+        filter.setValue(1 - value, forKey: "inputCropAmount")
+        
+//        filter.setValue(value, forKeyPath: "inputCenterStretchAmount")
+//        filter.setValue(0, forKeyPath: "inputCropAmount")
         guard let outputImage = filter.outputImage else {return inputImage}
         let outputUIImage = UIImage(ciImage: outputImage)
-        print("filter image = \(outputImage)")
         
         // 変形対象の下の部分を切る.
         let frameBottom = CIVector(cgRect: CGRect(x: 0, y: 0, width: inputImage.extent.size.width, height: 500))
