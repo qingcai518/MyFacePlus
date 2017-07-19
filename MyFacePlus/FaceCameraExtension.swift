@@ -134,36 +134,44 @@ extension FaceCameraController {
         var faceFeatureCount = 0
         for feature in faceFeatures {
             guard let faceFeature = feature as? CIFaceFeature else {continue}
+
+            let leftEyePosition = faceFeature.leftEyePosition
+            let rightEyePosition = faceFeature.rightEyePosition
             
             faceFeatureCount += 1
-            let frame = FaceManager.shared.getFaceFrame(with: faceFeature, ciImage.extent.size)
-            if glassView == nil {
-                print("11111")
-                glassView = UIImageView()
-                glassView.contentMode = .scaleAspectFit
-                glassView.clipsToBounds = true
-                glassView.image = UIImage(named: "icon_glasses")
-                view.addSubview(glassView)
+
+            if leftEyeView == nil {
+                leftEyeView = UIView()
+                leftEyeView.backgroundColor = UIColor.green
+                view.addSubview(leftEyeView)
             }
-            glassView.frame = frame
+            leftEyeView.frame = CGRect(x: leftEyePosition.x * screenWidth / ciImage.extent.size.width, y: (ciImage.extent.size.height - leftEyePosition.y) * screenHeight / ciImage.extent.height, width: 100, height: 20)
+            
+            if rightEyeView == nil {
+                rightEyeView = UIView()
+                rightEyeView.backgroundColor = UIColor.red
+                view.addSubview(rightEyeView)
+            }
+            rightEyeView.frame = CGRect(x: rightEyePosition.x * screenWidth / ciImage.extent.size.width, y: (ciImage.extent.size.height - rightEyePosition.y) * screenHeight / ciImage.extent.height, width: 100, height: 20)
+            break
         }
         
-        if faceFeatureCount == 0 && glassView != nil {
-            print("2222")
-            glassView.removeFromSuperview()
-            glassView = nil
+        if faceFeatureCount == 0 {
+            removeGlass()
         }
-        
-//        if faceFeatureCount == 0, glassView != nil {
-//            glassView.removeFromSuperview()
-//            glassView = nil
-//        }
     }
     
     fileprivate func removeGlass() {
-        if glassView != nil {
-            glassView.removeFromSuperview()
-            glassView = nil
+        if leftEyeView != nil {
+            print("remove left")
+            leftEyeView.removeFromSuperview()
+            leftEyeView = nil
+        }
+        
+        if rightEyeView != nil {
+            print("remove right")
+            rightEyeView.removeFromSuperview()
+            rightEyeView = nil
         }
     }
 }

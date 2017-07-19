@@ -22,7 +22,8 @@ class FaceCameraController: AppViewController {
     var barcaView : BarcaView!
     
     var tempView : UIView! // dummy.
-    var glassView : UIImageView!
+    var leftEyeView : UIView!
+    var rightEyeView : UIView!
     
     lazy var captureSession = AVCaptureSession()
 //    lazy var previewLayer = CALayer()
