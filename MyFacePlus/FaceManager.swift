@@ -83,86 +83,82 @@ class FaceManager {
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
         print("part rect = \(partRect)")
         
-        // 変形対象の上の部分を切る.
-//        let frameTop = CIVector(cgRect: CGRect(x: 0, y: partRect.origin.y + partRect.height, width: inputImage.extent.size.height, height: inputImage.extent.size.height - partRect.origin.y - partRect.height))
-        let frameTop = CIVector(cgRect: CGRect(x: 0, y: 700, width: inputImage.extent.size.width, height: inputImage.extent.size.height - 700))
-
-        guard let topFilter = CIFilter(name: "CICrop") else {return inputImage}
-        topFilter.setDefaults()
-        topFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
-        topFilter.setValue(frameTop, forKeyPath: "inputRectangle")
-        guard let topCIImage = topFilter.outputImage else { return inputImage }
-        let topUIImage = UIImage(ciImage: topCIImage)
+        guard let filter = CIFilter(name: "CIBumpDistortionLinear") else {return inputImage}
+        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: 700)
+        let inputRadius = 100.0
+        let inputScale = value
         
-        // 変形対象部分を切る.
-        let frameVector = CIVector(cgRect:CGRect(x: 0, y: 500, width: inputImage.extent.size.width, height: 200))
-//        let frameVector = CIVector(cgRect: CGRect(x: 0, y: partRect.origin.y, width: inputImage.extent.size.width, height: partRect.height))
-        guard let cropFilter = CIFilter(name: "CICrop") else { return inputImage }
-        cropFilter.setDefaults()
-        cropFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
-        cropFilter.setValue(frameVector, forKeyPath: "inputRectangle")
-        guard let cropOutputImage = cropFilter.outputImage else {return inputImage}
-//        guard let cropOutputImage = cropFilter.outputImage?.cropping(to: UIScreen.main.bounds) else {return inputImage}
-        
-        // 切り取った画像を加工する.
-        guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
         filter.setDefaults()
-        filter.setValue(cropOutputImage, forKeyPath: kCIInputImageKey)
-        filter.setValue(1, forKey: "inputCenterStretchAmount")
-        filter.setValue(1 - value, forKey: "inputCropAmount")
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(inputCenter, forKey: kCIInputCenterKey)
+        filter.setValue(inputRadius, forKeyPath: kCIInputRadiusKey)
+        filter.setValue(inputScale, forKeyPath: kCIInputScaleKey)
         
-//        filter.setValue(value, forKeyPath: "inputCenterStretchAmount")
-//        filter.setValue(0, forKeyPath: "inputCropAmount")
-        guard let outputImage = filter.outputImage else {return inputImage}
-        let outputUIImage = UIImage(ciImage: outputImage)
-        
-        // 変形対象の下の部分を切る.
-        let frameBottom = CIVector(cgRect: CGRect(x: 0, y: 0, width: inputImage.extent.size.width, height: 500))
-//        let frameBottom = CIVector(cgRect: CGRect(x: 0, y: 0, width: inputImage.extent.size.width, height: partRect.origin.y))
-        guard let bottomFilter = CIFilter(name: "CICrop") else {return inputImage}
-        bottomFilter.setDefaults()
-        bottomFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
-        bottomFilter.setValue(frameBottom, forKeyPath: "inputRectangle")
-        guard let bottomCIImage = bottomFilter.outputImage else {return inputImage}
-        let bottomUIImage = UIImage(ciImage: bottomCIImage)
-        
-        // 三つの部分を併合する.
-        UIGraphicsBeginImageContext(UIScreen.main.bounds.size)
-        
-        topUIImage.draw(in: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight - 700 * screenHeight / inputImage.extent.height))
-        outputUIImage.draw(in: CGRect(x: 0, y: screenHeight - 700 * screenHeight / inputImage.extent.height, width: screenWidth, height: 200 * screenHeight / inputImage.extent.height))
-        bottomUIImage.draw(in: CGRect(x: 0, y: screenHeight - 500 * screenHeight / inputImage.extent.height, width: screenWidth, height: 500 * screenHeight / inputImage.extent.height))
-        
-//        topUIImage.draw(in:CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight - (partRect.origin.y + partRect.height) * screenHeight / inputImage.extent.height))
-//        outputUIImage.draw(in: CGRect(x: 0, y: screenHeight - (partRect.origin.y + partRect.height) * screenHeight / inputImage.extent.height, width: screenWidth, height: (partRect.origin.y + partRect.maxY) * screenHeight / inputImage.extent.height))
-//        bottomUIImage.draw(in: CGRect(x: 0, y: screenHeight - partRect.origin.y * screenHeight / inputImage.extent.height, width: screenWidth, height: partRect.origin.y * screenHeight / inputImage.extent.height))
-        
-        
-        guard let resultUIImage = UIGraphicsGetImageFromCurrentImageContext() else {return inputImage}
-        UIGraphicsEndImageContext()
-        
-        let resultCIImage = CIImage(image: resultUIImage)
-        return resultCIImage
+        return filter.outputImage
     }
     
-//    
-//    func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float ) -> CIImage? {
+//    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
 //        guard let inputImage = inputImage else {return nil}
 //        guard let faceObject = faceObject else {return nil}
 //        
-//        // CIStretchCrop
-//        guard let filter = CIFilter(name: "CIStretchCrop") else { return inputImage }
+//        // thin対象部分を取得する.
+//        let faceRect = getFaceFrame(in: inputImage, faceObject)
+//        let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
+//        print("part rect = \(partRect)")
+//        
+//        // 変形対象の上の部分を切る.
+////        let frameTop = CIVector(cgRect: CGRect(x: 0, y: partRect.origin.y + partRect.height, width: inputImage.extent.size.height, height: inputImage.extent.size.height - partRect.origin.y - partRect.height))
+//        let frameTop = CIVector(cgRect: CGRect(x: 0, y: 700, width: inputImage.extent.size.width, height: inputImage.extent.size.height - 700))
+//
+//        guard let topFilter = CIFilter(name: "CICrop") else {return inputImage}
+//        topFilter.setDefaults()
+//        topFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
+//        topFilter.setValue(frameTop, forKeyPath: "inputRectangle")
+//        guard let topCIImage = topFilter.outputImage else { return inputImage }
+//        let topUIImage = UIImage(ciImage: topCIImage)
+//        
+//        // 変形対象部分を切る.
+//        let frameVector = CIVector(cgRect:CGRect(x: 0, y: 500, width: inputImage.extent.size.width, height: 200))
+////        let frameVector = CIVector(cgRect: CGRect(x: 0, y: partRect.origin.y, width: inputImage.extent.size.width, height: partRect.height))
+//        guard let cropFilter = CIFilter(name: "CICrop") else { return inputImage }
+//        cropFilter.setDefaults()
+//        cropFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
+//        cropFilter.setValue(frameVector, forKeyPath: "inputRectangle")
+//        guard let cropOutputImage = cropFilter.outputImage else {return inputImage}
+////        guard let cropOutputImage = cropFilter.outputImage?.cropping(to: UIScreen.main.bounds) else {return inputImage}
+//        
+//        // 切り取った画像を加工する.
+//        guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
 //        filter.setDefaults()
-//        filter.setValue(inputImage, forKey: kCIInputImageKey)
+//        filter.setValue(cropOutputImage, forKeyPath: kCIInputImageKey)
 //        filter.setValue(value, forKey: "inputCenterStretchAmount")
 //        filter.setValue(0, forKey: "inputCropAmount")
-//        // TODO. Thin face only a part of image.
 //        
-//        // 範囲フィルタ.
+//        guard let outputImage = filter.outputImage else {return inputImage}
+//        let outputUIImage = UIImage(ciImage: outputImage)
 //        
+//        // 変形対象の下の部分を切る.
+//        let frameBottom = CIVector(cgRect: CGRect(x: 0, y: 0, width: inputImage.extent.size.width, height: 500))
+////        let frameBottom = CIVector(cgRect: CGRect(x: 0, y: 0, width: inputImage.extent.size.width, height: partRect.origin.y))
+//        guard let bottomFilter = CIFilter(name: "CICrop") else {return inputImage}
+//        bottomFilter.setDefaults()
+//        bottomFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
+//        bottomFilter.setValue(frameBottom, forKeyPath: "inputRectangle")
+//        guard let bottomCIImage = bottomFilter.outputImage else {return inputImage}
+//        let bottomUIImage = UIImage(ciImage: bottomCIImage)
 //        
+//        // 三つの部分を併合する.
+//        UIGraphicsBeginImageContext(UIScreen.main.bounds.size)
 //        
-//        return filter.outputImage
+//        topUIImage.draw(in: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight - 700 * screenHeight / inputImage.extent.height))
+//        outputUIImage.draw(in: CGRect(x: 0, y: screenHeight - 700 * screenHeight / inputImage.extent.height, width: screenWidth, height: 200 * screenHeight / inputImage.extent.height))
+//        bottomUIImage.draw(in: CGRect(x: 0, y: screenHeight - 500 * screenHeight / inputImage.extent.height, width: screenWidth, height: 500 * screenHeight / inputImage.extent.height))
+//        
+//        guard let resultUIImage = UIGraphicsGetImageFromCurrentImageContext() else {return inputImage}
+//        UIGraphicsEndImageContext()
+//
+//        let resultCIImage = CIImage(image: resultUIImage)
+//        return resultCIImage
 //    }
     
     /**
