@@ -58,18 +58,19 @@ class FaceManager {
         for feature in features {
             guard let faceFeature = feature as? CIFaceFeature else {continue}
             let leftEyePosition = faceFeature.leftEyePosition
+            let rightEyePosition = faceFeature.rightEyePosition
             
             print("left eye position = \(leftEyePosition)")
+            print("right eye position = \(rightEyePosition)")
             
             // 合成.
-            guard let blendFilter = CIFilter(name: "CIMultiplyBlendMode") else {return nil}
-            blendFilter.setValue(inputImage, forKey: kCIInputImageKey)
-            blendFilter.setValue(maskImage, forKey: kCIInputBackgroundImageKey)
+            guard let composeFilter = CIFilter(name: "CIMinimumCompositing") else {return inputImage}
+            composeFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
+            composeFilter.setValue(maskImage, forKeyPath: kCIInputBackgroundImageKey)
             
-            return blendFilter.outputImage
+            return composeFilter.outputImage
         }
         
-        print("1111")
         return inputImage
     }
     
@@ -81,30 +82,6 @@ class FaceManager {
         
         let faceRect = getFaceFrame(in: inputImage, faceObject)
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
-        
-//        guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
-//        filter.setDefaults()
-//        filter.setValue(inputImage, forKey: kCIInputImageKey)
-//        filter.setValue(value, forKey: "inputCenterStretchAmount")
-//        filter.setValue(0, forKey: "inputCropAmount")
-        
-//        // 範囲フィルタ.
-//        let radius = faceObject.bounds.size.width * inputImage.extent.size.width / 3
-//        let centerX = partRect.origin.x + partRect.size.width / 2
-//        let centerY = inputImage.extent.height - partRect.maxY
-//        let inputCenter = CIVector(x: centerX, y: centerY)
-//        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
-//        gradientFilter.setValue(radius, forKey: "inputRadius0")
-//        gradientFilter.setValue(radius + 1, forKey: "inputRadius1")
-//        gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
-//        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
-//        // 合成フィルタ.
-//        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
-//        blendFilter.setValue(filter.outputImage, forKey: kCIInputImageKey)
-//        blendFilter.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
-//        blendFilter.setValue(gradientOutputImage, forKey: kCIInputMaskImageKey)
-//        return blendFilter.outputImage
-        
         
         // 画像を切る.
         let frameVector = CIVector(x: partRect.origin.x, y: inputImage.extent.size.height - partRect.origin.y - partRect.size.height, z: partRect.size.width, w: partRect.size.height)
