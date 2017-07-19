@@ -88,6 +88,9 @@ extension FaceCameraController {
         }
         
         let faceFrame = FaceManager.shared.getFaceFrame(with: faceObject)
+        
+        print("face frame for barca = \(faceFrame)")
+        
         if barcaView == nil, let tempView = UINib(nibName: "BarcaView", bundle: nil).instantiate(withOwner: self, options: nil).first as? BarcaView {
             barcaView = tempView
             self.view.addSubview(barcaView)
@@ -97,7 +100,8 @@ extension FaceCameraController {
             self.view.bringSubview(toFront: closeView)
             self.view.bringSubview(toFront: switchBtn)
         }
-        barcaView.setIconPosition(faceFrame.origin.x + 20, faceFrame.origin.y + 10, faceFrame.width, faceFrame.height)
+        
+        barcaView.setIconPosition(faceFrame.origin.x, faceFrame.origin.y, faceFrame.width, faceFrame.height)
         
         let recognizer = UITapGestureRecognizer()
         recognizer.rx.event.bind { [weak self] sender in
@@ -121,7 +125,7 @@ extension FaceCameraController {
     fileprivate func addSlider() {
         slider.isHidden = false
         
-//        detectFace()
+        detectFace()
     }
     
     fileprivate func removeSlider() {

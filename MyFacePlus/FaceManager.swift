@@ -17,11 +17,20 @@ class FaceManager {
         let filterNames = CIFilter.filterNames(inCategory: kCICategoryBuiltIn)
         let _ = filterNames.map{print($0)}
     }
-
+    
+//    func makeMosaicFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?) -> CIImage? {
+//        guard let inputImage = inputImage else {return nil}
+//        guard let faceObject = faceObject else {return nil}
+//        let faceRect = getFaceFrame(with: faceObject)
+//        
+//        guard let pixelFilter = CIFilter(name: "CIPixellate") else {return nil}
+//        
+//    }
+    
     func makeMosaicFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
-        let faceRect = getFaceFrame(with: faceObject)
+        let faceRect = getFaceFrame(in: inputImage, faceObject)
         
         // モザイクフィルタ.
         guard let pixelFilter = CIFilter(name: "CIPixellate") else {return nil}
@@ -29,47 +38,45 @@ class FaceManager {
         pixelFilter.setValue(60, forKey: kCIInputScaleKey)
         
 //        // 範囲フィルタ.
-        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
-        gradientFilter.setValue(max(faceRect.width, faceRect.height), forKey: "inputRadius0")
-        gradientFilter.setValue(max(faceRect.width, faceRect.height) + 1, forKey: "inputRadius1")
-        
-//        let centerX = faceRect.origin.x + faceRect.width / 2
-//        let centerY = faceRect.origin.y + faceRect.height / 2
-        let centerX = screenWidth * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
-        let centerY = screenHeight * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
+        let maxSize = max(faceRect.width * screenWidth / inputImage.extent.size.width, faceRect.height * screenHeight / inputImage.extent.size.height)
+        print("maxSize = \(maxSize)")
+        let centerX = faceRect.origin.x + faceRect.size.width / 2
+        let centerY = inputImage.extent.height - faceRect.origin.y - faceRect.size.height / 2
         let inputCenter = CIVector(x: centerX, y: centerY)
+        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
+        gradientFilter.setValue(maxSize, forKey: "inputRadius0")
+        gradientFilter.setValue(maxSize + 1, forKey: "inputRadius1")
         gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
-        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: UIScreen.main.bounds) else {return nil}
         
+        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
+        
+//        // 合成フィルタ。
+//        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
+//        blendFilter.setValue(inputImage, forKey: kCIInputImageKey)
+//        
+//        return blendFilter.outputImage
+//        
+//        
+//        
+//        
+//        
+//        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
+//        gradientFilter.setValue(max(faceRect.width, faceRect.height), forKey: "inputRadius0")
+//        gradientFilter.setValue(max(faceRect.width, faceRect.height) + 1, forKey: "inputRadius1")
+//        
+//        let centerX = faceRect.origin.x + faceRect.size.width / 2
+//        let centerY = inputImage.extent.height - faceRect.origin.y - faceRect.size.height / 2
+//        let inputCenter = CIVector(x: centerX, y: centerY)
+//
+//        gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
+//        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
+//        
         // 合成フィルタ.
         guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
         blendFilter.setValue(pixelFilter.outputImage, forKey: kCIInputImageKey)
         blendFilter.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
         blendFilter.setValue(gradientOutputImage, forKey: kCIInputMaskImageKey)
         return blendFilter.outputImage
-
-        
-//        filter.setValue(max(inputImage.extent.size.width, inputImage.extent.size.height) / 60, forKey: kCIInputScaleKey)
-//        let centerX = inputImage.extent.size.width * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
-//        let centerY = inputImage.extent.size.height * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
-//        let radius = faceObject.bounds.size.width * inputImage.extent.size.width
-//
-//        let params: [String: Any] = [
-//            "inputRadius0" : radius,
-//            "inputRadius1" : radius + 1,
-//            "inputColor0" : CIColor(red: 0, green: 1, blue: 0, alpha: 1),
-//            "inputColor1" : CIColor(red: 0, green: 0, blue: 0, alpha: 0),
-//            kCIInputCenterKey : CIVector(x: centerX, y: centerY)
-//        ]
-//        
-//        guard let radialGradient = CIFilter(name: "CIRadialGradient", withInputParameters: params) else {return nil}
-//        guard let radialGradientOutputImage = radialGradient.outputImage?.cropping(to: inputImage.extent) else {return nil}
-//        
-//        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
-//        blendFilter.setValue(filter.outputImage, forKey: kCIInputImageKey)
-//        blendFilter.setValue(inputImage, forKey: kCIInputBackgroundImageKey)
-//        blendFilter.setValue(radialGradientOutputImage, forKey: kCIInputMaskImageKey)
-//        return blendFilter.outputImage
     }
     
     func makeShinFace(with inputImage: CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float ) -> CIImage? {
@@ -127,9 +134,20 @@ class FaceManager {
     func getFaceFrame(with faceObject : AVMetadataFaceObject) -> CGRect {
         let centerX = screenWidth * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
         let centerY = screenHeight * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
-        
         let width = screenWidth * faceObject.bounds.size.height
         let height = screenHeight * faceObject.bounds.size.width
+        
+        let originX = centerX - width / 2
+        let originY = centerY - height / 2
+        
+        return CGRect(x: originX, y: originY, width: width, height: height)
+    }
+    
+    func getFaceFrame(in inputImage: CIImage, _ faceObject : AVMetadataFaceObject) -> CGRect {
+        let centerX = inputImage.extent.width * (1 - faceObject.bounds.origin.y - faceObject.bounds.size.height / 2)
+        let centerY = inputImage.extent.height * (faceObject.bounds.origin.x + faceObject.bounds.size.width / 2)
+        let width = inputImage.extent.width * faceObject.bounds.size.height
+        let height = inputImage.extent.height * faceObject.bounds.size.width
         
         let originX = centerX - width / 2
         let originY = centerY - height / 2
