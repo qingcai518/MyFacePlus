@@ -51,7 +51,8 @@ class FaceManager {
         guard let inputImage = inputImage else {return nil}
         guard let faceObject = faceObject else {return nil}
         
-        // thin 対象部分を取得する.
+        // thin対象部分を取得する.
+        
         let faceRect = getFaceFrame(in: inputImage, faceObject)
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
         
@@ -64,9 +65,8 @@ class FaceManager {
         // 範囲フィルタ.
         let radius = faceObject.bounds.size.width * inputImage.extent.size.width / 3
         let centerX = partRect.origin.x + partRect.size.width / 2
-        let centerY = partRect.maxY - partRect.size.height
-        
-        let inputCenter = CIVector(x: centerX, y : centerY)
+        let centerY = inputImage.extent.height - partRect.maxY
+        let inputCenter = CIVector(x: centerX, y: centerY)
         guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
         gradientFilter.setValue(radius, forKey: "inputRadius0")
         gradientFilter.setValue(radius + 1, forKey: "inputRadius1")
