@@ -83,17 +83,17 @@ class FaceManager {
         let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
         print("part rect = \(partRect)")
         
-        guard let filter = CIFilter(name: "CIBumpDistortionLinear") else {return inputImage}
-        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: 700)
-        let inputRadius = 100.0
-        let inputScale = value
+        guard let filter = CIFilter(name: "CIBumpDistortion") else {return inputImage}
+//        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: 700)
+        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: faceRect.origin.y)
+        let inputRadius = partRect.height
         
         filter.setDefaults()
         filter.setValue(inputImage, forKey: kCIInputImageKey)
         filter.setValue(inputCenter, forKey: kCIInputCenterKey)
         filter.setValue(inputRadius, forKeyPath: kCIInputRadiusKey)
-        filter.setValue(inputScale, forKeyPath: kCIInputScaleKey)
-        
+        filter.setValue(-1 + value, forKeyPath: kCIInputScaleKey)
+
         return filter.outputImage
     }
     
