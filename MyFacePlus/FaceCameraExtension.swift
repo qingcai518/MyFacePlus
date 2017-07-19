@@ -67,12 +67,19 @@ extension FaceCameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         case .barca:
             addBarcaView()
             removeSlider()
+            removeGlass()
         case .girl:
             addSlider()
+            removeBarcaView()
+            removeGlass()
+        case .glass:
+            addGlass()
+            removeSlider()
             removeBarcaView()
         default:
             removeBarcaView()
             removeSlider()
+            removeGlass()
         }
     }
 }
@@ -111,6 +118,45 @@ extension FaceCameraController {
         if barcaView != nil {
             barcaView.removeFromSuperview()
             barcaView = nil
+        }
+    }
+}
+
+/**
+ * face7. glass.
+ */
+extension FaceCameraController {
+    fileprivate func addGlass() {
+        guard let ciImage = ciImage else {return}
+        let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
+        guard let faceFeatures = detector?.features(in: ciImage) else {return}
+        
+        var faceFeatureCount = 0
+        for feature in faceFeatures {
+            guard let faceFeature = feature as? CIFaceFeature else {continue}
+            
+            faceFeatureCount += 1
+            let frame = FaceManager.shared.getFaceFrame(with: faceFeature, ciImage.extent.size)
+            if glassView == nil {
+                glassView = UIImageView()
+                glassView.contentMode = .scaleAspectFit
+                glassView.clipsToBounds = true
+                glassView.image = UIImage(named: "icon_glasses")
+                view.addSubview(glassView)
+            }
+            glassView.frame = frame
+        }
+        
+        if faceFeatureCount == 0, glassView != nil {
+            glassView.removeFromSuperview()
+            glassView = nil
+        }
+    }
+    
+    fileprivate func removeGlass() {
+        if glassView != nil {
+            glassView.removeFromSuperview()
+            glassView = nil
         }
     }
 }
