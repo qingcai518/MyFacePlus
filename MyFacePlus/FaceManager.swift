@@ -38,39 +38,17 @@ class FaceManager {
         pixelFilter.setValue(60, forKey: kCIInputScaleKey)
         
 //        // 範囲フィルタ.
-        let maxSize = max(faceRect.width * screenWidth / inputImage.extent.size.width, faceRect.height * screenHeight / inputImage.extent.size.height)
-        print("maxSize = \(maxSize)")
+//        let maxSize = max(faceRect.width * screenWidth / inputImage.extent.size.width, faceRect.height * screenHeight / inputImage.extent.size.height)
+        let minSize = min(faceRect.width, faceRect.height)
         let centerX = faceRect.origin.x + faceRect.size.width / 2
         let centerY = inputImage.extent.height - faceRect.origin.y - faceRect.size.height / 2
         let inputCenter = CIVector(x: centerX, y: centerY)
         guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
-        gradientFilter.setValue(maxSize, forKey: "inputRadius0")
-        gradientFilter.setValue(maxSize + 1, forKey: "inputRadius1")
+        gradientFilter.setValue(minSize, forKey: "inputRadius0")
+        gradientFilter.setValue(minSize + 1, forKey: "inputRadius1")
         gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
-        
         guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
-        
-//        // 合成フィルタ。
-//        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
-//        blendFilter.setValue(inputImage, forKey: kCIInputImageKey)
-//        
-//        return blendFilter.outputImage
-//        
-//        
-//        
-//        
-//        
-//        guard let gradientFilter = CIFilter(name: "CIRadialGradient") else {return nil}
-//        gradientFilter.setValue(max(faceRect.width, faceRect.height), forKey: "inputRadius0")
-//        gradientFilter.setValue(max(faceRect.width, faceRect.height) + 1, forKey: "inputRadius1")
-//        
-//        let centerX = faceRect.origin.x + faceRect.size.width / 2
-//        let centerY = inputImage.extent.height - faceRect.origin.y - faceRect.size.height / 2
-//        let inputCenter = CIVector(x: centerX, y: centerY)
-//
-//        gradientFilter.setValue(inputCenter, forKey: kCIInputCenterKey)
-//        guard let gradientOutputImage = gradientFilter.outputImage?.cropping(to: inputImage.extent) else {return nil}
-//        
+
         // 合成フィルタ.
         guard let blendFilter = CIFilter(name: "CIBlendWithMask") else {return nil}
         blendFilter.setValue(pixelFilter.outputImage, forKey: kCIInputImageKey)
