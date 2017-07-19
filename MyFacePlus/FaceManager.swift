@@ -114,7 +114,7 @@ class FaceManager {
         cropFilter.setDefaults()
         cropFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
         cropFilter.setValue(frameVector, forKeyPath: "inputRectangle")
-        guard let cropOutputImage = cropFilter.outputImage?.cropping(to: CGRect(x: 200, y: 200, width: 60, height: 80)) else {return inputImage}
+        guard let cropOutputImage = cropFilter.outputImage?.cropping(to: UIScreen.main.bounds) else {return inputImage}
         
         // 切り取った画像を加工する.
         guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
@@ -123,10 +123,10 @@ class FaceManager {
         filter.setValue(value, forKeyPath: "inputCenterStretchAmount")
         filter.setValue(0, forKeyPath: "inputCropAmount")
         guard let outputImage = filter.outputImage else {return inputImage}
-//        guard let outputImage = filter.outputImage?.cropping(to: inputImage.extent) else {return inputImage}
         
         // 加工後の画像と元の画像を併合する.
         guard let composeFilter = CIFilter(name: "CIMinimumCompositing") else {return inputImage}
+        
         composeFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
         composeFilter.setValue(outputImage, forKeyPath: kCIInputBackgroundImageKey)
         
