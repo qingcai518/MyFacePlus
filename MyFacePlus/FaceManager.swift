@@ -105,6 +105,7 @@ class FaceManager {
 //        blendFilter.setValue(gradientOutputImage, forKey: kCIInputMaskImageKey)
 //        return blendFilter.outputImage
         
+        
         // 画像を切る.
         let frameVector = CIVector(x: partRect.origin.x, y: inputImage.extent.size.height - partRect.origin.y - partRect.size.height, z: partRect.size.width, w: partRect.size.height)
         guard let cropFilter = CIFilter(name: "CICrop") else {
@@ -113,14 +114,16 @@ class FaceManager {
         cropFilter.setDefaults()
         cropFilter.setValue(inputImage, forKeyPath: kCIInputImageKey)
         cropFilter.setValue(frameVector, forKeyPath: "inputRectangle")
+        guard let cropOutputImage = cropFilter.outputImage?.cropping(to: CGRect(x: 200, y: 200, width: 60, height: 80)) else {return inputImage}
         
         // 切り取った画像を加工する.
         guard let filter = CIFilter(name: "CIStretchCrop") else {return inputImage}
         filter.setDefaults()
-        filter.setValue(cropFilter.outputImage, forKeyPath: kCIInputImageKey)
+        filter.setValue(cropOutputImage, forKeyPath: kCIInputImageKey)
         filter.setValue(value, forKeyPath: "inputCenterStretchAmount")
         filter.setValue(0, forKeyPath: "inputCropAmount")
-        guard let outputImage = filter.outputImage?.cropping(to: partRect) else {return inputImage}
+        guard let outputImage = filter.outputImage else {return inputImage}
+//        guard let outputImage = filter.outputImage?.cropping(to: inputImage.extent) else {return inputImage}
         
         // 加工後の画像と元の画像を併合する.
         guard let composeFilter = CIFilter(name: "CIMinimumCompositing") else {return inputImage}
