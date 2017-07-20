@@ -74,29 +74,60 @@ class FaceManager {
         return inputImage
     }
     
-    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
+    func makeShinFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?, _ value: Float, context: CIContext) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
-        guard let faceObject = faceObject else {return nil}
+        let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
+        guard let features = detector?.features(in: inputImage) else {return inputImage}
         
-        // thin対象部分を取得する.
-        let faceRect = getFaceFrame(in: inputImage, faceObject)
-        let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y + faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
-        print("part rect = \(partRect)")
+        for feature in features {
+            guard let faceFeature = feature as? CIFaceFeature else {continue}
+            let faceRect = FaceManager.shared.getFaceFrame(with: faceFeature, inputImage.extent.size)
+            
+            // filter.
+            guard let filter = CIFilter(name: "CIBumpDistortion") else {return inputImage}
+            let inputCenter = CIVector(x: inputImage.extent.width / 2, y: faceRect.origin.y)
+            let inputRadius = 200
+            filter.setDefaults()
+            filter.setValue(inputImage, forKey: kCIInputImageKey)
+            filter.setValue(inputCenter, forKey: kCIInputCenterKey)
+            filter.setValue(inputRadius, forKey: kCIInputRadiusKey)
+            filter.setValue(value - 1, forKey: kCIInputScaleKey)
+            
+            return filter.outputImage
+        }
         
-        guard let filter = CIFilter(name: "CIBumpDistortion") else {return inputImage}
-//        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: 700)
-        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: faceRect.origin.y)
-        let inputRadius = partRect.height
+        return inputImage
         
-        filter.setDefaults()
-        filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(inputCenter, forKey: kCIInputCenterKey)
-        filter.setValue(inputRadius, forKeyPath: kCIInputRadiusKey)
-        filter.setValue(-1 + value, forKeyPath: kCIInputScaleKey)
-
-        return filter.outputImage
     }
     
+    /*
+     * 顔を変形させる.
+     */
+//    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
+//        guard let inputImage = inputImage else {return nil}
+//        guard let faceObject = faceObject else {return nil}
+//        
+//        // thin対象部分を取得する.
+//        let faceRect = getFaceFrame(in: inputImage, faceObject)
+//        let partRect = CGRect(x: faceRect.origin.x, y: faceRect.origin.y - faceRect.size.height * 2 / 3, width: faceRect.size.width, height: faceRect.size.height / 3)
+//        print("part rect = \(partRect)")
+//        
+//        guard let filter = CIFilter(name: "CIBumpDistortion") else {return inputImage}
+//        let inputCenter = CIVector(x: inputImage.extent.width / 2, y: faceRect.origin.y)
+//        let inputRadius = partRect.height
+//        
+//        filter.setDefaults()
+//        filter.setValue(inputImage, forKey: kCIInputImageKey)
+//        filter.setValue(inputCenter, forKey: kCIInputCenterKey)
+//        filter.setValue(inputRadius, forKeyPath: kCIInputRadiusKey)
+//        filter.setValue(-1 + value, forKeyPath: kCIInputScaleKey)
+//
+//        return filter.outputImage
+//    }
+
+    /*
+     * 三つの部分に分けてやる.
+     */
 //    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
 //        guard let inputImage = inputImage else {return nil}
 //        guard let faceObject = faceObject else {return nil}
