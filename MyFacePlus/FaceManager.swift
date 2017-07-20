@@ -74,19 +74,25 @@ class FaceManager {
         return inputImage
     }
     
-    func makeShinFace(with inputImage: CIImage?, _ faceObject: AVMetadataFaceObject?, _ value: Float, context: CIContext) -> CIImage? {
+    func makeShinFace(with inputImage: CIImage?, _ context : CIContext, _ value : Float) -> CIImage? {
         guard let inputImage = inputImage else {return nil}
         let detector = CIDetector(ofType: CIDetectorTypeFace, context: context, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
         guard let features = detector?.features(in: inputImage) else {return inputImage}
-        
         for feature in features {
             guard let faceFeature = feature as? CIFaceFeature else {continue}
-            let faceRect = FaceManager.shared.getFaceFrame(with: faceFeature, inputImage.extent.size)
             
-            // filter.
+            let mouthPosition = faceFeature.mouthPosition
+            let leftEyePosition = faceFeature.leftEyePosition
+            let rightEyePositon = faceFeature.rightEyePosition
+            
+            print("mouth position = \(mouthPosition)")
+            print("left eye position = \(leftEyePosition)")
+            print("right eye positoin = \(rightEyePositon)")
+            
+            // set filter.
             guard let filter = CIFilter(name: "CIBumpDistortion") else {return inputImage}
-            let inputCenter = CIVector(x: inputImage.extent.width / 2, y: faceRect.origin.y)
-            let inputRadius = 200
+            let inputCenter = CIVector(x: 200, y: 200)   // todo ここはアゴの位置を設定する.
+            let inputRadius = 200    // todo. ここはあごからくちまでの距離を設定する.
             filter.setDefaults()
             filter.setValue(inputImage, forKey: kCIInputImageKey)
             filter.setValue(inputCenter, forKey: kCIInputCenterKey)
@@ -97,11 +103,10 @@ class FaceManager {
         }
         
         return inputImage
-        
     }
     
     /*
-     * 顔を変形させる.
+     * 顔を変形させる. (main 保留)
      */
 //    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
 //        guard let inputImage = inputImage else {return nil}
@@ -126,7 +131,7 @@ class FaceManager {
 //    }
 
     /*
-     * 三つの部分に分けてやる.
+     * 三つの部分に分けてやる. 一旦保留.
      */
 //    func makeShinFace(with inputImage : CIImage?, _ faceObject : AVMetadataFaceObject?, _ value: Float) -> CIImage? {
 //        guard let inputImage = inputImage else {return nil}
